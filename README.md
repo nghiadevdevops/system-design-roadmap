@@ -37,6 +37,7 @@ Tuần 1 làm **baseline**: KT0 + mock M1 lạnh. Tuần 14 làm lại M1 để 
 - **Máy tính ước lượng**: DAU → QPS, dung lượng, băng thông, cache, số máy; kèm bảng latency, luỹ thừa 2, nines.
 - **Lab Go** (12): từ đo latency, pool/timeout, cache stampede, idempotent consumer + DLQ, consistent hashing, outbox, rate limiter Lua, Snowflake, bloom filter, distributed cron, load test + pprof, đến capstone mini SBOM pipeline.
 - **Sổ tay thiết kế**: ADR mini, postmortem mini, bài học, "áp dụng thứ Sáu", khác biệt sau mock, câu chuyện STAR. Xuất Markdown.
+- **Thuật ngữ**: bảng tra cứu tiếng Việt có tìm kiếm và lọc theo chủ đề; trong bài học, thuật ngữ được gạch chân chấm, bấm vào hiện định nghĩa ngắn (bật/tắt ở Cài đặt).
 - **Hướng dẫn**: cách làm đề (khung 5 pha, câu hỏi làm rõ, công thức ước lượng, rubric, luyện một mình, prompt AI làm người phỏng vấn, 12 sai lầm), cách làm test & oral, dùng vào công việc (mẫu design doc, ADR, capacity plan, production readiness, postmortem), tài nguyên.
 
 ## Cấu trúc file
@@ -56,6 +57,7 @@ data/cards.js         FLASH (D1–D7)
 data/labs.js          LABS (L1–L12)
 data/mocks_extra.js   MOCKS X1–X6 (có reference)
 data/guides.js        GUIDES (method, knowledge, real, resources)
+data/glossary.js      GLOSSARY (thuật ngữ: term, alt, vi, def, ex, topic, see)
 tools/validate.js     node tools/validate.js data/<file>.js — kiểm tra schema trước khi sửa/thêm nội dung
 ```
 

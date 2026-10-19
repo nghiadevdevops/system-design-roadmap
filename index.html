@@ -56,6 +56,10 @@ textarea{min-height:120px;line-height:1.6}
 #toast.show{opacity:1}
 .muted{color:var(--mute)}.right{text-align:right}.center{text-align:center}.small{font-size:13px}
 details summary{cursor:pointer;font-weight:600}
+.term{text-decoration:underline dotted var(--pri);text-decoration-thickness:1.5px;text-underline-offset:3px;cursor:help}
+#pop{position:fixed;z-index:8;max-width:360px;background:var(--card);border:1px solid var(--pri);border-radius:10px;padding:10px 12px;box-shadow:0 6px 24px #0003;font-size:14px;display:none;line-height:1.5}
+#pop.show{display:block}#pop .pt{font-weight:700}#pop .pv{color:var(--mute);font-weight:400;font-size:13px}#pop .px{color:var(--mute);font-style:italic;font-size:13px;margin-top:4px}#pop .row a{margin-right:8px}
+.gl .card{padding:10px 14px;margin:6px 0}.gl .pt{font-weight:700;margin-bottom:2px}
 #menu-btn{display:none}
 @media(max-width:860px){#side{position:fixed;left:-250px;z-index:5;transition:.2s}#side.open{left:0}#menu-btn{display:inline-block;position:fixed;top:10px;left:10px;z-index:6}#main{padding:52px 14px 60px}}
 @media print{#side,#menu-btn{display:none}#main{padding:0}}
@@ -70,6 +74,7 @@ details summary{cursor:pointer;font-weight:600}
   <a href="#/roadmap" data-r="roadmap">Lộ trình 24 tuần</a>
   <a href="#/lessons" data-r="lessons">Tất cả bài học</a>
   <a href="#/cards" data-r="cards">Flashcard</a>
+  <a href="#/glossary" data-r="glossary">Thuật ngữ</a>
   <div class="grp">Luyện</div>
   <a href="#/drill" data-r="drill">Drill trộn câu hỏi</a>
   <a href="#/oral" data-r="oral">Hỏi nhanh 2 phút</a>
@@ -89,6 +94,7 @@ details summary{cursor:pointer;font-weight:600}
 <main id="main"></main>
 </div>
 <div id="toast"></div>
+<div id="pop"></div>
 
 <script src="data/schedule.js"></script>
 <script src="data/phase1.js"></script>
@@ -103,10 +109,12 @@ details summary{cursor:pointer;font-weight:600}
 <script src="data/labs.js"></script>
 <script src="data/mocks_extra.js"></script>
 <script src="data/guides.js"></script>
+<script src="data/glossary.js"></script>
+<script src="data/glossary2.js"></script>
 <script>
 /* ================= STORAGE ================= */
 const KEY='sdr.v1';
-const DEF={startDate:'',curWeek:1,newPerDay:15,done:{},tasks:{},quiz:{},cards:{},newToday:{d:'',n:0},mocks:[],mockDraft:null,ktests:[],oral:{},journal:[],labs:{},weekDone:{},activity:{},drill:{hist:[],wrong:{}},calc:{},oralSeen:{}};
+const DEF={startDate:'',curWeek:1,newPerDay:15,done:{},tasks:{},quiz:{},cards:{},newToday:{d:'',n:0},mocks:[],mockDraft:null,ktests:[],oral:{},journal:[],labs:{},weekDone:{},activity:{},drill:{hist:[],wrong:{}},calc:{},oralSeen:{},termHints:true};
 let S=load();
 function load(){try{const j=JSON.parse(localStorage.getItem(KEY)||'null');return Object.assign(JSON.parse(JSON.stringify(DEF)),j||{});}catch(e){return JSON.parse(JSON.stringify(DEF));}}
 function save(){localStorage.setItem(KEY,JSON.stringify(S));}
@@ -123,6 +131,7 @@ const fmtT=x=>{x=Math.max(0,Math.round(x));return String(Math.floor(x/60)).padSt
 /* ================= DATA ================= */
 const LESSONS={};
 [window.LESSONS_F,window.LESSONS_B1,window.LESSONS_B1B,window.LESSONS_B2,window.LESSONS_C1,window.LESSONS_C2,window.LESSONS_K].forEach(arr=>(arr||[]).forEach(l=>{LESSONS[l.id]=l;}));
+const GLOSSARY=window.GLOSSARY||[];
 const MOCKS=window.MOCKS||[],KTESTS=window.KTESTS||[],ORAL=window.ORAL||[],FLASH=window.FLASH||[],LABS=window.LABS||[],GUIDES=window.GUIDES||{},ROADMAP=window.ROADMAP||[];
 const TYPE_VI={foundation:'Nền tảng',block:'Khối xây dựng',case:'Case study',knowledge:'Kiến thức PV'};
 const PHASE_NAME={1:'Giai đoạn 1 · Nền tảng',2:'Giai đoạn 2 · Khối xây dựng',3:'Giai đoạn 3 · Bài toán kinh điển',4:'Giai đoạn 4 · Phỏng vấn & thực chiến'};
@@ -198,12 +207,38 @@ function mkTimer(sec,el,onEnd,onTick){let left=sec,iv=null;const draw=()=>{if(el
 function killTimers(){TIMERS.forEach(t=>t.stop());TIMERS.length=0;}
 function beep(n){try{const c=new (window.AudioContext||window.webkitAudioContext)();for(let k=0;k<(n||2);k++){const o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=880;g.gain.value=.15;o.start(c.currentTime+k*.35);o.stop(c.currentTime+k*.35+.25);}}catch(e){}}
 
+/* ================= GLOSSARY / TERM HINTS ================= */
+let TERM_RE=null,TERM_IDX=null;
+function termIndex(){if(TERM_RE!==null)return;TERM_IDX={};const names=[];GLOSSARY.forEach((g,i)=>{[g.term].concat(g.alt||[]).forEach(n=>{const k=String(n).toLowerCase();if(!TERM_IDX[k]){TERM_IDX[k]=i;names.push(String(n));}});});if(!names.length){TERM_RE=false;return;}
+ names.sort((a,b)=>b.length-a.length);const escR=x=>x.replace(/[.*+?^${}()|[\]\\\/-]/g,'\\$&');TERM_RE=new RegExp('\\b('+names.map(escR).join('|')+')\\b','gi');}
+const TERM_SKIP=new Set(['CODE','PRE','A','H1','H2','H3','H4','H5','ABBR','SVG','BUTTON','LABEL','INPUT','TEXTAREA','SELECT','OPTION','TH','SUMMARY']);
+function termify(root){if(S.termHints===false||!GLOSSARY.length||!root)return;termIndex();if(!TERM_RE)return;const seen=new Set();
+ const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>{let p=n.parentNode;while(p&&p!==root){if(TERM_SKIP.has(p.tagName)||(p.classList&&p.classList.contains('term')))return NodeFilter.FILTER_REJECT;p=p.parentNode;}return n.nodeValue.trim().length>3?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT;}});
+ const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+ nodes.forEach(n=>{const txt=n.nodeValue;TERM_RE.lastIndex=0;let m,last=0,frag=null;while((m=TERM_RE.exec(txt))){const gi=TERM_IDX[m[1].toLowerCase()];if(gi==null||seen.has(gi))continue;seen.add(gi);if(!frag)frag=document.createDocumentFragment();frag.appendChild(document.createTextNode(txt.slice(last,m.index)));const ab=document.createElement('abbr');ab.className='term';ab.dataset.g=gi;ab.title='Bấm để xem giải thích';ab.textContent=m[0];frag.appendChild(ab);last=m.index+m[0].length;}
+  if(frag){frag.appendChild(document.createTextNode(txt.slice(last)));n.parentNode.replaceChild(frag,n);}});}
+const POP=document.getElementById('pop');
+function lessonHref(id){return '#/'+(/^L\d/.test(id)?'lab':'lesson')+'/'+id;}
+function showPop(el){const g=GLOSSARY[+el.dataset.g];if(!g)return;POP.innerHTML=`<div class="pt">${esc(g.term)} <span class="pv">· ${esc(g.vi)}</span></div><div>${inline(g.def)}</div>${g.ex?`<div class="px">${inline(g.ex)}</div>`:''}<div class="row small" style="margin:6px 0 0"><a href="#/glossary/${encodeURIComponent(g.term)}">Bảng thuật ngữ</a>${(g.see||[]).map(id=>`<a href="${lessonHref(id)}">${id}</a>`).join('')}</div>`;
+ POP.classList.add('show');const r=el.getBoundingClientRect();const w=Math.min(360,innerWidth-16);POP.style.width=w+'px';POP.style.left=Math.max(8,Math.min(r.left,innerWidth-w-8))+'px';POP.style.top=(r.bottom+8)+'px';
+ requestAnimationFrame(()=>{const h=POP.offsetHeight;if(r.bottom+8+h>innerHeight-8)POP.style.top=Math.max(8,r.top-h-8)+'px';});}
+document.addEventListener('click',e=>{const t=e.target.closest('.term');if(t){e.preventDefault();showPop(t);return;}if(!e.target.closest('#pop'))POP.classList.remove('show');});
+function vGlossary(sel){const topic=S._gt||'';const topics={};GLOSSARY.forEach(g=>topics[g.topic]=(topics[g.topic]||0)+1);
+ const list=GLOSSARY.map((g,i)=>Object.assign({i},g)).filter(g=>!topic||g.topic===topic).sort((a,b)=>a.term.localeCompare(b.term,'en',{sensitivity:'base'}));
+ main.innerHTML=`<h1>Thuật ngữ <span class="badge">${GLOSSARY.length}</span></h1><p class="sub">Định nghĩa ngắn bằng tiếng Việt cho thuật ngữ dùng trong bài. Khi đọc bài học, thuật ngữ có gạch chân chấm: bấm vào để xem nhanh (bật/tắt ở Cài đặt).</p>
+ <input class="in" id="gq" placeholder="Tìm: consistent hashing, p99, outbox, DLQ, băm nhất quán..." value="${esc(S._gq||'')}">
+ <div class="row"><span class="chip ${!topic?'on':''}" data-t="">Tất cả</span>${Object.keys(topics).sort((a,b)=>(TOPIC_VI[a]||a).localeCompare(TOPIC_VI[b]||b)).map(t=>`<span class="chip ${topic===t?'on':''}" data-t="${t}">${TOPIC_VI[t]||t} (${topics[t]})</span>`).join('')}</div>
+ <div class="gl" id="gl">${list.map(g=>`<div class="card" id="g-${g.i}" data-s="${esc((g.term+' '+(g.alt||[]).join(' ')+' '+g.vi+' '+g.def).toLowerCase())}"><div class="pt">${esc(g.term)} <span class="badge g">${esc(g.vi)}</span> <span class="badge">${TOPIC_VI[g.topic]||g.topic}</span>${(g.alt||[]).length?` <span class="small muted">(${g.alt.map(esc).join(', ')})</span>`:''}</div><div>${inline(g.def)}</div>${g.ex?`<div class="small muted"><i>${inline(g.ex)}</i></div>`:''}${(g.see||[]).length?`<div class="small">Xem: ${g.see.map(id=>`<a href="${lessonHref(id)}">${id}</a>`).join(' · ')}</div>`:''}</div>`).join('')||'<p class="muted">Chưa có thuật ngữ.</p>'}</div>`;
+ const inp=document.getElementById('gq');const filt=()=>{const v=inp.value.toLowerCase().trim();S._gq=inp.value;let n=0;main.querySelectorAll('#gl .card').forEach(c=>{const ok=!v||c.dataset.s.includes(v);c.style.display=ok?'':'none';if(ok)n++;});main.querySelector('h1 .badge').textContent=n+'/'+GLOSSARY.length;};inp.oninput=filt;if(S._gq)filt();
+ main.querySelectorAll('.chip[data-t]').forEach(c=>c.onclick=()=>{S._gt=c.dataset.t;vGlossary();});
+ if(sel){const gi=GLOSSARY.findIndex(x=>x.term===decodeURIComponent(sel));const el=document.getElementById('g-'+gi);if(el){el.style.borderColor='var(--pri)';setTimeout(()=>el.scrollIntoView({block:'center'}),50);}}}
+
 /* ================= ROUTER ================= */
 const main=document.getElementById('main');
-function route(){killTimers();document.onkeydown=null;const h=location.hash.replace(/^#\/?/,'')||'dashboard';const [a,b,c]=h.split('/');
+function route(){killTimers();document.onkeydown=null;POP.classList.remove('show');const h=location.hash.replace(/^#\/?/,'')||'dashboard';const [a,b,c]=h.split('/');
  document.querySelectorAll('#side a').forEach(x=>x.classList.toggle('active',x.dataset.r===(a==='guide'?a+'/'+b:a)));
  document.getElementById('side').classList.remove('open');window.scrollTo(0,0);
- const V={dashboard:vDash,roadmap:vRoadmap,week:()=>vWeek(+b),lessons:vLessons,lesson:()=>vLesson(b),cards:()=>vCards(b,c),drill:vDrill,oral:vOral,calc:vCalc,labs:vLabs,lab:()=>vLab(b),mock:()=>vMock(b,c),ktest:()=>vKtest(b,c),journal:()=>vJournal(b,c),guide:()=>vGuide(b),settings:vSettings};
+ const V={dashboard:vDash,roadmap:vRoadmap,week:()=>vWeek(+b),lessons:vLessons,lesson:()=>vLesson(b),cards:()=>vCards(b,c),glossary:()=>vGlossary(b),drill:vDrill,oral:vOral,calc:vCalc,labs:vLabs,lab:()=>vLab(b),mock:()=>vMock(b,c),ktest:()=>vKtest(b,c),journal:()=>vJournal(b,c),guide:()=>vGuide(b),settings:vSettings};
  (V[a]||vDash)();}
 window.addEventListener('hashchange',route);
 document.getElementById('menu-btn').onclick=()=>document.getElementById('side').classList.toggle('open');
@@ -306,7 +341,7 @@ function vLesson(id){
  ${renderQuiz(l)}
  <div class="card row"><button class="btn ${S.done[id]?'ok':'primary'}" id="mark">${S.done[id]?'✓ Đã học — bấm để bỏ đánh dấu':'Đánh dấu đã học'}</button><a class="btn" href="#/journal/new/${id}">Ghi vào Sổ tay</a>${ix>=0&&ix<sib.length-1?`<a class="btn" href="#/lesson/${sib[ix+1]}">Bài tiếp: ${sib[ix+1]}</a>`:''}</div>`;
  document.getElementById('mark').onclick=()=>{if(S.done[id])delete S.done[id];else{S.done[id]=today();act();}save();vLesson(id);};
- bindQuiz(l);
+ bindQuiz(l);termify(main);
 }
 function quizItemHtml(q,i){const t=q.t||'mc';
  const body=t==='mc'?q.o.map((o,j)=>`<label class="opt"><input type="radio" name="q${i}" value="${j}"> ${esc(o)}</label>`).join(''):t==='fill'?`<input class="in" name="q${i}" autocomplete="off" spellcheck="false" placeholder="Điền phần còn thiếu">`:`<textarea name="q${i}" placeholder="Trả lời 3–5 câu như đang nói với người phỏng vấn" style="min-height:90px"></textarea>`;
@@ -455,7 +490,7 @@ function vLab(id){
  main.querySelectorAll('[data-st]').forEach(cb=>cb.onchange=()=>{if(cb.checked)st.steps[cb.dataset.st]=1;else delete st.steps[cb.dataset.st];cb.closest('.task').classList.toggle('done',cb.checked);act();});
  main.querySelectorAll('[data-ac]').forEach(cb=>cb.onchange=()=>{if(cb.checked)st.accept[cb.dataset.ac]=1;else delete st.accept[cb.dataset.ac];cb.closest('.task').classList.toggle('done',cb.checked);save();});
  document.getElementById('ln').oninput=e=>{st.notes=e.target.value;save();};
- document.getElementById('ldone').onclick=()=>{st.done=st.done?0:today();act();vLab(id);};
+ document.getElementById('ldone').onclick=()=>{st.done=st.done?0:today();act();vLab(id);};termify(main);
 }
 
 /* ================= MOCK INTERVIEW ================= */
@@ -529,7 +564,7 @@ function vMockResult(i){
  <div class="card" style="border-color:var(--ok)"><h3>Câu trả lời mạnh có gì</h3>${md(m.rubric_notes||'')}</div>
  <h2>Lời giải tham chiếu</h2>
  ${c?`<p class="small muted">Đây là nội dung bài <a href="#/lesson/${c.id}">${c.id} · ${esc(c.title)}</a>. Đọc mục 1–6, ghi 3 khác biệt lớn nhất với bài bạn.</p><div class="card">${md(c.md)}</div>`:m.reference?`<div class="card">${md(m.reference)}</div>`:'<p class="muted">Đề này chưa có lời giải.</p>'}`;
- document.getElementById('del').onclick=()=>{if(confirm('Xóa kết quả lần này?')){S.mocks.splice(i,1);save();location.hash='#/mock';}};
+ document.getElementById('del').onclick=()=>{if(confirm('Xóa kết quả lần này?')){S.mocks.splice(i,1);save();location.hash='#/mock';}};termify(main);
 }
 
 /* ================= KNOWLEDGE TEST ================= */
@@ -586,17 +621,18 @@ function vJournal(sub,arg){
 function vGuide(name){
  const g=GUIDES[name];if(!g){location.hash='#/guide/method';return;}
  main.innerHTML=`<h1>${esc(g.title)}</h1><p class="sub">${esc(g.sub||'')}</p><div class="row">${g.sections.map(s=>`<a class="btn sm" href="#/guide/${name}#${s.id}" data-j="${s.id}">${esc(s.title)}</a>`).join('')}</div>${g.sections.map(s=>`<div class="card" id="${s.id}"><h2 style="margin-top:4px">${esc(s.title)}</h2>${md(s.md)}</div>`).join('')}`;
- main.querySelectorAll('[data-j]').forEach(a=>a.onclick=e=>{e.preventDefault();document.getElementById(a.dataset.j).scrollIntoView({behavior:'smooth'});});
+ main.querySelectorAll('[data-j]').forEach(a=>a.onclick=e=>{e.preventDefault();document.getElementById(a.dataset.j).scrollIntoView({behavior:'smooth'});});termify(main);
 }
 function vSettings(){
  main.innerHTML=`<h1>Cài đặt & sao lưu</h1><div class="card"><form id="sf"><div class="grid g2">
  <label>Ngày bắt đầu (tuần 1)<input class="in" type="date" name="startDate" value="${esc(S.startDate||'')}"></label><label>Tuần hiện tại<input class="in" type="number" name="curWeek" min="1" max="24" value="${curWeek()}"></label>
- <label>Thẻ flashcard mới mỗi ngày<input class="in" type="number" name="newPerDay" min="5" max="60" value="${S.newPerDay}"></label></div>
+ <label>Thẻ flashcard mới mỗi ngày<input class="in" type="number" name="newPerDay" min="5" max="60" value="${S.newPerDay}"></label>
+ <label class="task" style="border:0;align-self:end"><input type="checkbox" name="termHints" ${S.termHints!==false?'checked':''}><span>Gạch chân và giải thích thuật ngữ trong bài học (bấm vào từ để xem)</span></label></div>
  <div class="row"><button class="btn primary">Lưu</button></div></form></div>
  <div class="card"><h3>Sao lưu</h3><p class="small muted">Toàn bộ tiến độ (bài học, quiz, thẻ, mock, test, sổ tay, lab) nằm trong localStorage của trình duyệt này. Xuất JSON mỗi tuần.</p><div class="row"><button class="btn" id="exp">Xuất JSON</button><label class="btn">Nhập JSON<input type="file" id="imp" accept="application/json" style="display:none"></label><button class="btn bad" id="reset">Xóa toàn bộ tiến độ</button></div></div>
- <div class="card"><h3>Dữ liệu đã nạp</h3><table><tbody><tr><td>Bài học</td><td>${Object.keys(LESSONS).length} (${Object.entries(TYPE_VI).map(([k,v])=>v+': '+Object.values(LESSONS).filter(l=>l.type===k).length).join(' · ')})</td></tr><tr><td>Mock</td><td>${MOCKS.length}</td></tr><tr><td>Test kiến thức</td><td>${KTESTS.length} đề · ${KTESTS.reduce((a,t)=>a+t.qs.length,0)} câu</td></tr><tr><td>Hỏi nhanh</td><td>${ORAL.length}</td></tr><tr><td>Flashcard</td><td>${FLASH.length} bộ · ${FLASH.reduce((a,d)=>a+d.cards.length,0)} thẻ</td></tr><tr><td>Lab</td><td>${LABS.length}</td></tr></tbody></table></div>
+ <div class="card"><h3>Dữ liệu đã nạp</h3><table><tbody><tr><td>Bài học</td><td>${Object.keys(LESSONS).length} (${Object.entries(TYPE_VI).map(([k,v])=>v+': '+Object.values(LESSONS).filter(l=>l.type===k).length).join(' · ')})</td></tr><tr><td>Mock</td><td>${MOCKS.length}</td></tr><tr><td>Test kiến thức</td><td>${KTESTS.length} đề · ${KTESTS.reduce((a,t)=>a+t.qs.length,0)} câu</td></tr><tr><td>Hỏi nhanh</td><td>${ORAL.length}</td></tr><tr><td>Flashcard</td><td>${FLASH.length} bộ · ${FLASH.reduce((a,d)=>a+d.cards.length,0)} thẻ</td></tr><tr><td>Lab</td><td>${LABS.length}</td></tr><tr><td>Thuật ngữ</td><td>${GLOSSARY.length}</td></tr></tbody></table></div>
  <div class="card"><h3>Về bộ tài liệu</h3>${md(window.ABOUT||'')}</div>`;
- document.getElementById('sf').onsubmit=e=>{e.preventDefault();const f=new FormData(e.target);S.startDate=f.get('startDate');S.curWeek=+f.get('curWeek');S.newPerDay=+f.get('newPerDay');save();toast('Đã lưu');};
+ document.getElementById('sf').onsubmit=e=>{e.preventDefault();const f=new FormData(e.target);S.startDate=f.get('startDate');S.curWeek=+f.get('curWeek');S.newPerDay=+f.get('newPerDay');S.termHints=!!f.get('termHints');save();toast('Đã lưu');};
  document.getElementById('exp').onclick=()=>{const b=new Blob([JSON.stringify(S,null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='system-design-roadmap-'+today()+'.json';a.click();};
  document.getElementById('imp').onchange=e=>{const r=new FileReader();r.onload=()=>{try{const j=JSON.parse(r.result);if(!j.done||!j.cards)throw 0;S=Object.assign(JSON.parse(JSON.stringify(DEF)),j);save();toast('Đã nhập');vSettings();}catch(x){toast('File không hợp lệ');}};r.readAsText(e.target.files[0]);};
  document.getElementById('reset').onclick=()=>{if(confirm('Xóa toàn bộ tiến độ, mock, sổ tay? Không hoàn tác được.')){localStorage.removeItem(KEY);S=load();vSettings();}};
