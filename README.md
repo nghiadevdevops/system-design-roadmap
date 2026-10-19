@@ -4,6 +4,8 @@ App học tĩnh (HTML + JS, không backend) để tự học system design và k
 
 ## Chạy
 
+- Bản online (GitHub Pages, repo public): https://nghiadevdevops.github.io/system-design-roadmap/ — mở trên điện thoại rồi "Thêm vào màn hình chính".
+
 - Mở trực tiếp `index.html` bằng Chrome/Edge là chạy (mọi thứ offline).
 - Hoặc phục vụ qua HTTP để dùng trong Browser pane của Claude:
 
