@@ -3,8 +3,8 @@
 const fs = require('fs'), path = require('path'), vm = require('vm');
 let bad = 0;
 const err = (f, m) => { bad++; console.log('  ✗ ' + f + ': ' + m); };
-const TOPICS = new Set(['net','os','db','cache','queue','api','scale','consistency','storage','security','observability','go','concurrency','cloud','design','behavioral','realtime','search','data']);
-const TYPES = new Set(['foundation','block','case','knowledge']);
+const TOPICS = new Set(['net','os','db','cache','queue','api','scale','consistency','storage','security','observability','go','concurrency','cloud','design','behavioral','realtime','search','data','node','frontend','testing','devops','shipping']);
+const TYPES = new Set(['foundation','block','case','knowledge','job']);
 for (const file of process.argv.slice(2)) {
   const src = fs.readFileSync(file, 'utf8');
   const w = {}; const ctx = { window: w, console };
@@ -58,9 +58,10 @@ for (const file of process.argv.slice(2)) {
       }); console.log('  MOCKS: ' + v.length);
     }
     if (k === 'KTESTS') { v.forEach(t => { const where = 'KTESTS/' + t.id; if (!t.minutes) err(where, 'minutes'); (t.qs || []).forEach((q, i) => { if (!TOPICS.has(q.topic)) err(where + '#' + (i + 1), 'bad topic ' + q.topic); }); checkQuiz(where, t.qs); if ((t.qs || []).length < 25) err(where, 'needs >=25 questions'); }); console.log('  KTESTS: ' + v.length); }
+    if (k === 'JOB_QA') { v.forEach((q, i) => { const where = 'JOB_QA#' + (i + 1); if (!q.id || !q.q || !q.a || !q.topic) err(where, 'missing id/q/a/topic'); if (!TOPICS.has(q.topic)) err(where, 'bad topic ' + q.topic); if (!/^JQ\d+$/.test(q.id || '')) err(where, 'id must be JQ<n>'); checkMd(where, q.a); }); console.log('  JOB_QA: ' + v.length); }
     if (k === 'ORAL') { v.forEach((q, i) => { const where = 'ORAL#' + (i + 1); if (!q.id || !q.q || !q.a || !q.topic) err(where, 'missing id/q/a/topic'); if (!TOPICS.has(q.topic)) err(where, 'bad topic ' + q.topic); checkMd(where, q.a); }); console.log('  ORAL: ' + v.length); }
     if (k === 'FLASH') { let n = 0; v.forEach(d => { const where = 'FLASH/' + d.id; if (!d.title || !d.kind) err(where, 'title/kind'); (d.cards || []).forEach((c, i) => { n++; if (!c.f || !c.b) err(where + '#' + (i + 1), 'f/b'); }); }); console.log('  FLASH: ' + v.length + ' decks, ' + n + ' cards'); }
-    if (k === 'GLOSSARY') { const seen = new Set(); v.forEach((g, i) => { const where = 'GLOSSARY#' + (i + 1) + ' ' + (g.term || '?'); ['term','vi','def','topic'].forEach(f => { if (!g[f]) err(where, 'missing ' + f); }); const key = String(g.term || '').toLowerCase(); if (seen.has(key)) err(where, 'duplicate term'); seen.add(key); if ((g.def || '').length < 40) err(where, 'def too short'); if (!TOPICS.has(g.topic)) err(where, 'bad topic ' + g.topic); (g.see || []).forEach(id => { if (!/^[FBCKL]\d+$/.test(id)) err(where, 'see id invalid ' + id); }); (g.alt || []).forEach(a => { const ak = a.toLowerCase(); if (seen.has(ak)) err(where, 'alt duplicates a term: ' + a); seen.add(ak); }); checkMd(where, g.def); if (/[`]/.test((g.def||'')+(g.ex||''))) err(where, 'backtick in content'); }); console.log('  GLOSSARY: ' + v.length + ' terms'); }
+    if (k === 'GLOSSARY') { const seen = new Set(); v.forEach((g, i) => { const where = 'GLOSSARY#' + (i + 1) + ' ' + (g.term || '?'); ['term','vi','def','topic'].forEach(f => { if (!g[f]) err(where, 'missing ' + f); }); const key = String(g.term || '').toLowerCase(); if (seen.has(key)) err(where, 'duplicate term'); seen.add(key); if ((g.def || '').length < 40) err(where, 'def too short'); if (!TOPICS.has(g.topic)) err(where, 'bad topic ' + g.topic); (g.see || []).forEach(id => { if (!/^[FBCKLJ]\d+$/.test(id)) err(where, 'see id invalid ' + id); }); (g.alt || []).forEach(a => { const ak = a.toLowerCase(); if (seen.has(ak)) err(where, 'alt duplicates a term: ' + a); seen.add(ak); }); checkMd(where, g.def); if (/[`]/.test((g.def||'')+(g.ex||''))) err(where, 'backtick in content'); }); console.log('  GLOSSARY: ' + v.length + ' terms'); }
     if (k === 'LABS') { v.forEach(l => { const where = 'LABS/' + l.id; ['id','title','goal','stack','steps','accept','observe','time'].forEach(f => { if (l[f] == null) err(where, 'missing ' + f); }); checkMd(where, l.observe); (l.steps || []).forEach(s => checkMd(where + ' step', s)); }); console.log('  LABS: ' + v.length); }
   }
 }

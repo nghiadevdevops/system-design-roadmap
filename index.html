@@ -62,6 +62,7 @@ details summary{cursor:pointer;font-weight:600}
 .gl .card{padding:10px 14px;margin:6px 0}.gl .pt{font-weight:700;margin-bottom:2px}
 #menu-btn{display:none}
 @media(max-width:860px){#side{position:fixed;left:-250px;z-index:5;transition:.2s}#side.open{left:0}#menu-btn{display:inline-block;position:fixed;top:10px;left:10px;z-index:6}#main{padding:52px 14px 60px}}
+@media(max-width:860px){#main table{display:block;overflow-x:auto}.grid.g4{gap:8px}.grid.g4 .card{margin:0;padding:10px 12px}.stat{font-size:22px}.kv{grid-template-columns:1fr}.tabs{flex-wrap:nowrap;overflow-x:auto}.tabs a{white-space:nowrap}}
 @media print{#side,#menu-btn{display:none}#main{padding:0}}
 </style>
 </head>
@@ -84,6 +85,8 @@ details summary{cursor:pointer;font-weight:600}
   <a href="#/mock" data-r="mock">Mock interview</a>
   <a href="#/ktest" data-r="ktest">Test kiến thức</a>
   <a href="#/journal" data-r="journal">Sổ tay thiết kế</a>
+  <div class="grp" id="jobgrp">Job đang ứng tuyển</div>
+  <a href="#/job" data-r="job" id="joblink">OTS · Full-stack Node/Next</a>
   <div class="grp">Hướng dẫn</div>
   <a href="#/guide/method" data-r="guide/method">Cách làm đề</a>
   <a href="#/guide/knowledge" data-r="guide/knowledge">Cách làm test & oral</a>
@@ -111,10 +114,16 @@ details summary{cursor:pointer;font-weight:600}
 <script src="data/guides.js"></script>
 <script src="data/glossary.js"></script>
 <script src="data/glossary2.js"></script>
+<script src="data/job.js"></script>
+<script src="data/job_lessons1.js"></script>
+<script src="data/job_lessons2.js"></script>
+<script src="data/job_lessons3.js"></script>
+<script src="data/job_qa.js"></script>
+<script src="data/job_mocks.js"></script>
 <script>
 /* ================= STORAGE ================= */
 const KEY='sdr.v1';
-const DEF={startDate:'',curWeek:1,newPerDay:15,done:{},tasks:{},quiz:{},cards:{},newToday:{d:'',n:0},mocks:[],mockDraft:null,ktests:[],oral:{},journal:[],labs:{},weekDone:{},activity:{},drill:{hist:[],wrong:{}},calc:{},oralSeen:{},termHints:true};
+const DEF={startDate:'',curWeek:1,newPerDay:15,done:{},tasks:{},quiz:{},cards:{},newToday:{d:'',n:0},mocks:[],mockDraft:null,ktests:[],oral:{},journal:[],labs:{},weekDone:{},activity:{},drill:{hist:[],wrong:{}},calc:{},oralSeen:{},termHints:true,job:{}};
 let S=load();
 function load(){try{const j=JSON.parse(localStorage.getItem(KEY)||'null');return Object.assign(JSON.parse(JSON.stringify(DEF)),j||{});}catch(e){return JSON.parse(JSON.stringify(DEF));}}
 function save(){localStorage.setItem(KEY,JSON.stringify(S));}
@@ -130,12 +139,13 @@ const fmtT=x=>{x=Math.max(0,Math.round(x));return String(Math.floor(x/60)).padSt
 
 /* ================= DATA ================= */
 const LESSONS={};
-[window.LESSONS_F,window.LESSONS_B1,window.LESSONS_B1B,window.LESSONS_B2,window.LESSONS_C1,window.LESSONS_C2,window.LESSONS_K].forEach(arr=>(arr||[]).forEach(l=>{LESSONS[l.id]=l;}));
-const GLOSSARY=window.GLOSSARY||[];
+[window.LESSONS_F,window.LESSONS_B1,window.LESSONS_B1B,window.LESSONS_B2,window.LESSONS_C1,window.LESSONS_C2,window.LESSONS_K,window.LESSONS_J1,window.LESSONS_J2,window.LESSONS_J3].forEach(arr=>(arr||[]).forEach(l=>{LESSONS[l.id]=l;}));
+const GLOSSARY=window.GLOSSARY||[];const JOB=window.JOB||null;const JOB_QA=window.JOB_QA||[];
+if(!JOB){['jobgrp','joblink'].forEach(id=>{const e=document.getElementById(id);if(e)e.remove();});}
 const MOCKS=window.MOCKS||[],KTESTS=window.KTESTS||[],ORAL=window.ORAL||[],FLASH=window.FLASH||[],LABS=window.LABS||[],GUIDES=window.GUIDES||{},ROADMAP=window.ROADMAP||[];
-const TYPE_VI={foundation:'Nền tảng',block:'Khối xây dựng',case:'Case study',knowledge:'Kiến thức PV'};
-const PHASE_NAME={1:'Giai đoạn 1 · Nền tảng',2:'Giai đoạn 2 · Khối xây dựng',3:'Giai đoạn 3 · Bài toán kinh điển',4:'Giai đoạn 4 · Phỏng vấn & thực chiến'};
-const TOPIC_VI={net:'Mạng',os:'Hệ điều hành',db:'Database',cache:'Cache',queue:'Queue & messaging',api:'API',scale:'Scale & reliability',consistency:'Consistency',storage:'Storage',security:'Security',observability:'Observability',go:'Go',concurrency:'Concurrency',cloud:'Cloud',design:'Thiết kế',behavioral:'Behavioral',realtime:'Realtime',search:'Search',data:'Data'};
+const TYPE_VI={foundation:'Nền tảng',block:'Khối xây dựng',case:'Case study',knowledge:'Kiến thức PV',job:'Job OTS'};
+const PHASE_NAME={1:'Giai đoạn 1 · Nền tảng',2:'Giai đoạn 2 · Khối xây dựng',3:'Giai đoạn 3 · Bài toán kinh điển',4:'Giai đoạn 4 · Phỏng vấn & thực chiến',5:'Tab Job · OTS Full-stack'};
+const TOPIC_VI={net:'Mạng',os:'Hệ điều hành',db:'Database',cache:'Cache',queue:'Queue & messaging',api:'API',scale:'Scale & reliability',consistency:'Consistency',storage:'Storage',security:'Security',observability:'Observability',go:'Go',concurrency:'Concurrency',cloud:'Cloud',design:'Thiết kế',behavioral:'Behavioral',realtime:'Realtime',search:'Search',data:'Data',node:'Node.js/TS',frontend:'Frontend',testing:'Testing',devops:'CI/CD & Cloud',shipping:'Nghiệp vụ hãng tàu'};
 const PHASE_KEYS=['req','est','hld','deep','wrap'];
 function weekOf(id){return ROADMAP.find(w=>(w.lessons||[]).includes(id));}
 function allLessonIds(){const s=new Set();ROADMAP.forEach(w=>(w.lessons||[]).forEach(id=>{if(LESSONS[id])s.add(id);}));Object.keys(LESSONS).forEach(id=>s.add(id));return [...s];}
@@ -209,13 +219,14 @@ function beep(n){try{const c=new (window.AudioContext||window.webkitAudioContext
 
 /* ================= GLOSSARY / TERM HINTS ================= */
 let TERM_RE=null,TERM_IDX=null;
-function termIndex(){if(TERM_RE!==null)return;TERM_IDX={};const names=[];GLOSSARY.forEach((g,i)=>{[g.term].concat(g.alt||[]).forEach(n=>{const k=String(n).toLowerCase();if(!TERM_IDX[k]){TERM_IDX[k]=i;names.push(String(n));}});});if(!names.length){TERM_RE=false;return;}
+const ACRO=/^[A-Z0-9&\/]{2,6}$/;
+function termIndex(){if(TERM_RE!==null)return;TERM_IDX={};const names=[];GLOSSARY.forEach((g,i)=>{[g.term].concat(g.alt||[]).forEach(n=>{n=String(n);const k=n.toLowerCase();if(!TERM_IDX[k]){TERM_IDX[k]=[];names.push(n);}TERM_IDX[k].push({i,name:n});});});if(!names.length){TERM_RE=false;return;}
  names.sort((a,b)=>b.length-a.length);const escR=x=>x.replace(/[.*+?^${}()|[\]\\\/-]/g,'\\$&');TERM_RE=new RegExp('\\b('+names.map(escR).join('|')+')\\b','gi');}
 const TERM_SKIP=new Set(['CODE','PRE','A','H1','H2','H3','H4','H5','ABBR','SVG','BUTTON','LABEL','INPUT','TEXTAREA','SELECT','OPTION','TH','SUMMARY']);
 function termify(root){if(S.termHints===false||!GLOSSARY.length||!root)return;termIndex();if(!TERM_RE)return;const seen=new Set();
- const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>{let p=n.parentNode;while(p&&p!==root){if(TERM_SKIP.has(p.tagName)||(p.classList&&p.classList.contains('term')))return NodeFilter.FILTER_REJECT;p=p.parentNode;}return n.nodeValue.trim().length>3?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT;}});
+ const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>{let p=n.parentNode;while(p&&p!==root){if(TERM_SKIP.has(p.tagName)||(p.classList&&(p.classList.contains('term')||p.classList.contains('noterm'))))return NodeFilter.FILTER_REJECT;p=p.parentNode;}return n.nodeValue.trim().length>3?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT;}});
  const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
- nodes.forEach(n=>{const txt=n.nodeValue;TERM_RE.lastIndex=0;let m,last=0,frag=null;while((m=TERM_RE.exec(txt))){const gi=TERM_IDX[m[1].toLowerCase()];if(gi==null||seen.has(gi))continue;seen.add(gi);if(!frag)frag=document.createDocumentFragment();frag.appendChild(document.createTextNode(txt.slice(last,m.index)));const ab=document.createElement('abbr');ab.className='term';ab.dataset.g=gi;ab.title='Bấm để xem giải thích';ab.textContent=m[0];frag.appendChild(ab);last=m.index+m[0].length;}
+ nodes.forEach(n=>{const txt=n.nodeValue;TERM_RE.lastIndex=0;let m,last=0,frag=null;while((m=TERM_RE.exec(txt))){const cands=TERM_IDX[m[1].toLowerCase()]||[];const c=cands.find(x=>x.name===m[1])||cands.find(x=>!ACRO.test(x.name));if(!c)continue;const gi=c.i;if(seen.has(gi))continue;seen.add(gi);if(!frag)frag=document.createDocumentFragment();frag.appendChild(document.createTextNode(txt.slice(last,m.index)));const ab=document.createElement('abbr');ab.className='term';ab.dataset.g=gi;ab.title='Bấm để xem giải thích';ab.textContent=m[0];frag.appendChild(ab);last=m.index+m[0].length;}
   if(frag){frag.appendChild(document.createTextNode(txt.slice(last)));n.parentNode.replaceChild(frag,n);}});}
 const POP=document.getElementById('pop');
 function lessonHref(id){return '#/'+(/^L\d/.test(id)?'lab':'lesson')+'/'+id;}
@@ -233,12 +244,62 @@ function vGlossary(sel){const topic=S._gt||'';const topics={};GLOSSARY.forEach(g
  main.querySelectorAll('.chip[data-t]').forEach(c=>c.onclick=()=>{S._gt=c.dataset.t;vGlossary();});
  if(sel){const gi=GLOSSARY.findIndex(x=>x.term===decodeURIComponent(sel));const el=document.getElementById('g-'+gi);if(el){el.style.borderColor='var(--pri)';setTimeout(()=>el.scrollIntoView({block:'center'}),50);}}}
 
+/* ================= JOB TAB ================= */
+const JOB_DAYS=[1,3,7,14];
+function J(){S.job=S.job||{};['plan','qa','beh','behDone','proj','acc','check','gap'].forEach(k=>{if(!S.job[k])S.job[k]={};});return S.job;}
+function jobLessonIds(){return Object.keys(LESSONS).filter(id=>LESSONS[id].type==='job').sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));}
+function jobTabs(sub){const T=[['','Tổng quan'],['matrix','Khớp kỹ năng'],['plan','Kế hoạch 4 tuần'],['lessons','Bài học'],['qa','Câu hỏi nhanh'],['mock','Mock hãng tàu'],['behavioral','Behavioral'],['project','Dự án luyện tay'],['prep','Chuẩn bị']];return `<div class="tabs">${T.map(t=>`<a href="#/job${t[0]?'/'+t[0]:''}" class="${(sub||'')===t[0]?'active':''}">${t[1]}</a>`).join('')}</div>`;}
+const GAP_LBL=[['Mạnh','ok'],['Khá','g'],['Cần bù','warn'],['Thiếu','bad']];
+function vJob(sub){
+ if(!JOB){main.innerHTML='<h1>Tab Job</h1><p class="muted">Chưa có dữ liệu job.</p>';return;}
+ const st=J();const jl=jobLessonIds();const ld=jl.filter(id=>S.done[id]).length;
+ const qaKnown=JOB_QA.filter(q=>(st.qa[q.id]||{}).box>=3).length;const jm=MOCKS.filter(m=>/^JM/.test(m.id));const jmDone=jm.filter(m=>S.mocks.some(a=>a.id===m.id)).length;
+ const pTot=JOB.plan.reduce((a,w)=>a+w.tasks.length,0);const pDone=Object.keys(st.plan).length;const bDone=Object.keys(st.behDone).length;
+ const head=`<div class="noterm"><div class="row" style="justify-content:space-between"><div><h1 style="margin:0">${esc(JOB.title)}</h1><p class="sub" style="margin:2px 0 0">${esc(JOB.company)} · ${esc(JOB.location)} · <a href="${esc(JOB.url)}" target="_blank" rel="noopener">Tin tuyển dụng ↗</a></p></div></div>
+ <div class="grid g4" style="margin-top:8px"><div class="card"><div class="stat">${ld}/${jl.length}<small>bài học J đã xong</small></div></div><div class="card"><div class="stat">${qaKnown}/${JOB_QA.length}<small>câu hỏi nhanh "biết rõ"</small></div></div><div class="card"><div class="stat">${jmDone}/${jm.length}<small>mock hãng tàu đã làm</small></div></div><div class="card"><div class="stat">${pDone}/${pTot}<small>việc trong kế hoạch</small></div></div><div class="card"><div class="stat">${bDone}/${JOB.behavioral.length}<small>câu behavioral đã tập</small></div></div></div></div>${jobTabs(sub)}`;
+ const V={'':()=>`<div class="card">${md(JOB.overview)}</div><div class="card">${md(JOB.domain)}</div>`,
+ matrix:()=>{const cnt=[0,0,0,0];JOB.matrix.forEach((r,i)=>{const g=st.gap[i]!=null?st.gap[i]:r.gap;cnt[g]++;});
+  return `<p class="sub">So từng yêu cầu của JD với kinh nghiệm của bạn. Cột "Mức" chỉnh được theo tự đánh giá của bạn; mục <b>Cần bù</b> và <b>Thiếu</b> là thứ tự ưu tiên ôn.</p><div class="row">${GAP_LBL.map((g,i)=>`<span class="badge ${g[1]}">${g[0]}: ${cnt[i]}</span>`).join('')}</div>
+  <table><thead><tr><th>Yêu cầu</th><th style="width:70px">Loại</th><th>Bạn đã có</th><th style="width:110px">Mức</th><th>Việc cần làm</th><th style="width:90px">Bài</th></tr></thead><tbody>${JOB.matrix.map((r,i)=>{const g=st.gap[i]!=null?st.gap[i]:r.gap;return `<tr><td><b>${esc(r.req)}</b></td><td class="small">${r.must?'Bắt buộc':'Ưu tiên'}</td><td class="small">${inline(r.have)}</td><td><select data-gap="${i}" style="width:auto;padding:3px 6px">${GAP_LBL.map((x,k)=>`<option value="${k}" ${k===g?'selected':''}>${x[0]}</option>`).join('')}</select></td><td class="small">${inline(r.todo)}</td><td class="small">${(r.links||[]).map(id=>`<a href="${lessonHref(id)}">${id}</a>`).join(' ')}</td></tr>`;}).join('')}</tbody></table>`;},
+ plan:()=>`<p class="sub">Bốn tuần, mỗi tuần 8–10 giờ. Rút còn 2 tuần nếu lịch phỏng vấn gấp: làm tuần 1 + 3 song song, tuần 2 + 4 song song, bỏ bớt bước dự án.</p>${JOB.plan.map(w=>{const d=w.tasks.filter((t,i)=>st.plan[w.w+':'+i]).length;return `<div class="card"><div class="row" style="justify-content:space-between"><h3 style="margin:0">Tuần ${w.w}: ${esc(w.title)}</h3><span class="badge ${d===w.tasks.length?'ok':''}">${d}/${w.tasks.length}</span></div><p class="small muted"><b>Đầu ra:</b> ${inline(w.goal)}</p>${w.tasks.map((t,i)=>{const k=w.w+':'+i;return `<label class="task ${st.plan[k]?'done':''}"><input type="checkbox" data-plan="${k}" ${st.plan[k]?'checked':''}><span>${inline(t)}</span></label>`;}).join('')}</div>`;}).join('')}`,
+ lessons:()=>`<p class="sub">Bài học viết riêng cho JD này. Mỗi bài có mục "Áp dụng: kể gì trong phỏng vấn OTS và luyện gì" và quiz 8 câu. Bài liên quan trong lộ trình chung được liệt kê ở tab Khớp kỹ năng.</p><div class="lesson-list">${jl.map(lessonLink).join('')||'<p class="muted">Chưa có bài.</p>'}</div><div class="row"><a class="btn" href="#/drill" id="jdrill">Drill trộn câu hỏi của các bài J</a></div>`,
+ qa:()=>{const topic=S._jt||'';const now=Date.now();const pool=JOB_QA.filter(q=>!topic||q.topic===topic);const due=pool.filter(q=>{const o=st.qa[q.id];return !o||o.due<=now;});const tps=[...new Set(JOB_QA.map(q=>q.topic))];
+  return `<p class="sub">Câu hỏi kỹ thuật kiểu vòng 1. Nói to trong 2 phút (định nghĩa → vì sao → cách làm/trade-off → ví dụ thật), rồi mở đáp án và tự chấm.</p>
+  <div class="row"><span class="chip ${!topic?'on':''}" data-jt="">Tất cả (${JOB_QA.length})</span>${tps.map(t=>`<span class="chip ${topic===t?'on':''}" data-jt="${t}">${TOPIC_VI[t]||t} (${JOB_QA.filter(q=>q.topic===t).length})</span>`).join('')}</div>
+  <div class="row"><button class="btn primary" id="jqr">Câu ngẫu nhiên (ưu tiên đến hạn: ${due.length})</button></div><div id="jqbox"></div>
+  <details style="margin-top:12px"><summary>Danh sách ${pool.length} câu</summary><table><thead><tr><th>#</th><th>Câu hỏi</th><th>Topic</th><th>Mức</th><th>Trạng thái</th></tr></thead><tbody>${pool.map(q=>{const o=st.qa[q.id];return `<tr class="click" data-jq="${q.id}"><td>${q.id}</td><td>${inline(q.q)}</td><td class="small">${TOPIC_VI[q.topic]||q.topic}</td><td>${q.level||''}</td><td>${o?`<span class="badge ${o.box>=3?'ok':o.box===2?'warn':'bad'}">${o.box>=3?'biết rõ':o.box===2?'mơ hồ':'chưa biết'}</span>`:'<span class="badge g">chưa gặp</span>'}</td></tr>`;}).join('')}</tbody></table></details>`;},
+ mock:()=>`<p class="sub">Đề system design theo nghiệp vụ hãng tàu, cùng engine 5 pha bấm giờ và rubric như phần Mock interview. Làm lạnh trước khi đọc reference. Nên làm thêm C5 (notification), C16 (booking), C18 (scheduler) của lộ trình chung.</p><table><thead><tr><th>Đề</th><th>Mức</th><th>Lần làm</th><th>Tốt nhất</th><th></th></tr></thead><tbody>${jm.map(m=>{const at=S.mocks.filter(x=>x.id===m.id);const best=at.length?Math.max(...at.map(x=>x.total)):null;return `<tr><td><b>${m.id}</b> · ${esc(m.title)}</td><td>${'★'.repeat(m.level||1)}</td><td>${at.length||''}</td><td>${best!=null?`<span class="badge ${best>=12?'ok':best>=9?'':'warn'}">${best}/15</span>`:''}</td><td><a class="btn sm primary" href="#/mock/run/${m.id}">Bắt đầu</a></td></tr>`;}).join('')||'<tr><td colspan="5" class="muted">Chưa có đề.</td></tr>'}</tbody></table>`,
+ behavioral:()=>`<p class="sub">Mười câu gắn với từng trách nhiệm trong JD. Mỗi câu có gợi ý câu chuyện từ kinh nghiệm thật của bạn; viết STAR của bạn vào ô, bấm giờ 2 phút và tập kể to.</p>${JOB.behavioral.map((b,i)=>`<div class="card"><div class="row" style="justify-content:space-between"><b>${i+1}. ${esc(b.q)}</b><span class="badge">${esc(b.jd)}</span></div><div class="small muted">${esc(b.vi)}</div>
+  <div class="kv" style="margin-top:6px"><span class="muted small">Câu chuyện gợi ý</span><span class="small">${inline(b.story)}</span><span class="muted small">Phải nói được</span><span class="small">${b.points.map(esc).join(' · ')}</span><span class="muted small">Tránh</span><span class="small">${inline(b.avoid)}</span></div>
+  <textarea data-beh="${i}" placeholder="S: ... T: ... A: ... R (có số): ... Bài học: ..." style="min-height:80px;margin-top:6px">${esc(st.beh[i]||'')}</textarea>
+  <div class="row"><button class="btn sm" data-bt="${i}">Bấm giờ 2 phút</button><span class="timer" id="bt${i}" style="font-size:18px"></span><label class="task" style="border:0;margin-left:auto"><input type="checkbox" data-bd="${i}" ${st.behDone[i]?'checked':''}><span>Đã tập kể</span></label></div></div>`).join('')}`,
+ project:()=>{const P=JOB.project;return `<div class="card"><h3 style="margin-top:0">${esc(P.title)}</h3><p>${inline(P.why)}</p><p class="small"><b>Stack:</b> ${esc(P.stack)}</p></div><div class="card"><h3>Các bước</h3>${P.steps.map((t,i)=>`<label class="task ${st.proj[i]?'done':''}"><input type="checkbox" data-proj="${i}" ${st.proj[i]?'checked':''}><span><b>Bước ${i+1}.</b> ${inline(t)}</span></label>`).join('')}</div><div class="card"><h3>Tiêu chí chấp nhận</h3>${P.accept.map((t,i)=>`<label class="task ${st.acc[i]?'done':''}"><input type="checkbox" data-acc="${i}" ${st.acc[i]?'checked':''}><span>${inline(t)}</span></label>`).join('')}</div><div class="card"><h3>Ghi chú dự án</h3><textarea id="jpn" placeholder="Link repo, vấn đề gặp phải, số liệu đo được...">${esc(st.projNotes||'')}</textarea></div>`;},
+ prep:()=>`<div class="card">${md(JOB.pitch)}</div><div class="card"><h3>Câu hỏi nên hỏi lại người phỏng vấn</h3><ol>${JOB.ask.map(a=>`<li>${inline(a)}</li>`).join('')}</ol></div><div class="card"><h3>Checklist ngày phỏng vấn</h3>${JOB.checklist.map((t,i)=>`<label class="task ${st.check[i]?'done':''}"><input type="checkbox" data-chk="${i}" ${st.check[i]?'checked':''}><span>${inline(t)}</span></label>`).join('')}<div class="row"><button class="btn sm" id="chkreset">Bỏ tick để dùng cho buổi sau</button></div></div>`};
+ main.innerHTML=head+(V[sub||'']||V[''])();const ta=main.querySelector('.tabs a.active');if(ta&&ta.parentNode.scrollWidth>ta.parentNode.clientWidth)ta.parentNode.scrollLeft=ta.offsetLeft-ta.parentNode.clientWidth/2+ta.offsetWidth/2;
+ const tog=(sel,obj,attr)=>main.querySelectorAll(sel).forEach(cb=>cb.onchange=()=>{const k=cb.dataset[attr];if(cb.checked){obj[k]=today();act();}else{delete obj[k];save();}cb.closest('.task')&&cb.closest('.task').classList.toggle('done',cb.checked);});
+ tog('[data-plan]',st.plan,'plan');tog('[data-proj]',st.proj,'proj');tog('[data-acc]',st.acc,'acc');tog('[data-chk]',st.check,'chk');tog('[data-bd]',st.behDone,'bd');
+ main.querySelectorAll('[data-gap]').forEach(se=>se.onchange=()=>{st.gap[se.dataset.gap]=+se.value;save();vJob('matrix');});
+ main.querySelectorAll('[data-beh]').forEach(ta=>ta.oninput=()=>{st.beh[ta.dataset.beh]=ta.value;save();});
+ main.querySelectorAll('[data-bt]').forEach(b=>b.onclick=()=>{const t=mkTimer(120,document.getElementById('bt'+b.dataset.bt),()=>toast('Hết 2 phút'));t.start();});
+ const jpn=document.getElementById('jpn');if(jpn)jpn.oninput=()=>{st.projNotes=jpn.value;save();};
+ const cr=document.getElementById('chkreset');if(cr)cr.onclick=()=>{st.check={};save();vJob('prep');};
+ const jd=document.getElementById('jdrill');if(jd)jd.onclick=()=>{S._dscope='type:job';};
+ main.querySelectorAll('.chip[data-jt]').forEach(c=>c.onclick=()=>{S._jt=c.dataset.jt;vJob('qa');});
+ if((sub||'')==='qa'){const now=Date.now();const pool=JOB_QA.filter(q=>!S._jt||q.topic===S._jt);
+  const show=q=>{killTimers();const box=document.getElementById('jqbox');let rev=false;const draw=()=>{const o=st.qa[q.id];box.innerHTML=`<div class="card"><div class="row"><span class="badge">${q.id}</span><span class="badge g">${TOPIC_VI[q.topic]||q.topic}</span><span class="badge g">mức ${q.level||1}</span>${o?`<span class="badge g">lần ${o.n||1}</span>`:''}<span class="timer" id="jqt" style="margin-left:auto;font-size:24px">02:00</span></div><div class="cue">${inline(q.q)}</div><div class="row"><button class="btn" id="jqgo">Bắt đầu 2 phút</button><button class="btn primary" id="jqrev">${rev?'Ẩn đáp án':'Xem đáp án'}</button></div>${rev?`<div class="card" style="background:var(--pri2)">${md(q.a)}</div><div class="row"><span class="small muted">Tự chấm:</span><button class="btn bad" data-r="1">Chưa biết</button><button class="btn warn" data-r="2">Mơ hồ</button><button class="btn ok" data-r="3">Biết rõ</button></div>`:''}</div>`;
+   const t=mkTimer(120,document.getElementById('jqt'),()=>toast('Hết 2 phút'));document.getElementById('jqgo').onclick=()=>t.start();document.getElementById('jqrev').onclick=()=>{rev=!rev;draw();};
+   box.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{const r=+b.dataset.r;const prev=st.qa[q.id];const bx=r===3?Math.min(4,(prev&&prev.box>=3?prev.box+1:3)):r;st.qa[q.id]={box:bx,due:Date.now()+JOB_DAYS[Math.min(3,bx-1)]*864e5,n:(prev?prev.n||0:0)+1,d:today()};act();toast('Đã lưu');vJob('qa');});termify(box);};draw();box.scrollIntoView({behavior:'smooth',block:'start'});};
+  document.getElementById('jqr').onclick=()=>{const due=pool.filter(q=>{const o=st.qa[q.id];return !o||o.due<=now;});const src=due.length?due:pool;if(!src.length){toast('Không có câu nào');return;}show(pick(src));};
+  main.querySelectorAll('tr[data-jq]').forEach(tr=>tr.onclick=()=>show(JOB_QA.find(q=>q.id===tr.dataset.jq)));}
+ if(!sub||sub==='project'||sub==='behavioral')termify(main);
+}
+
 /* ================= ROUTER ================= */
 const main=document.getElementById('main');
 function route(){killTimers();document.onkeydown=null;POP.classList.remove('show');const h=location.hash.replace(/^#\/?/,'')||'dashboard';const [a,b,c]=h.split('/');
  document.querySelectorAll('#side a').forEach(x=>x.classList.toggle('active',x.dataset.r===(a==='guide'?a+'/'+b:a)));
  document.getElementById('side').classList.remove('open');window.scrollTo(0,0);
- const V={dashboard:vDash,roadmap:vRoadmap,week:()=>vWeek(+b),lessons:vLessons,lesson:()=>vLesson(b),cards:()=>vCards(b,c),glossary:()=>vGlossary(b),drill:vDrill,oral:vOral,calc:vCalc,labs:vLabs,lab:()=>vLab(b),mock:()=>vMock(b,c),ktest:()=>vKtest(b,c),journal:()=>vJournal(b,c),guide:()=>vGuide(b),settings:vSettings};
+ const V={dashboard:vDash,roadmap:vRoadmap,week:()=>vWeek(+b),lessons:vLessons,lesson:()=>vLesson(b),cards:()=>vCards(b,c),glossary:()=>vGlossary(b),job:()=>vJob(b),drill:vDrill,oral:vOral,calc:vCalc,labs:vLabs,lab:()=>vLab(b),mock:()=>vMock(b,c),ktest:()=>vKtest(b,c),journal:()=>vJournal(b,c),guide:()=>vGuide(b),settings:vSettings};
  (V[a]||vDash)();}
 window.addEventListener('hashchange',route);
 document.getElementById('menu-btn').onclick=()=>document.getElementById('side').classList.toggle('open');
@@ -321,7 +382,7 @@ function vWeek(w){
 /* ================= LESSONS ================= */
 function vLessons(){
  const ids=allLessonIds();const q=(S._q||'');
- const groups={};ids.forEach(id=>{const l=LESSONS[id];const w=weekOf(id);const k=(w?w.phase:({foundation:1,block:2,case:3,knowledge:4}[l.type]||1));(groups[k]=groups[k]||[]).push(id);});
+ const groups={};ids.forEach(id=>{const l=LESSONS[id];const w=weekOf(id);const k=(w?w.phase:({foundation:1,block:2,case:3,knowledge:4,job:5}[l.type]||1));(groups[k]=groups[k]||[]).push(id);});
  const topics={};ids.forEach(id=>{const t=LESSONS[id].topic||'design';(topics[t]=topics[t]||[]).push(id);});
  main.innerHTML=`<h1>Tất cả bài học <span class="badge">${ids.filter(i=>S.done[i]).length}/${ids.length}</span></h1><p class="sub">Có thể học không theo tuần. Mỗi bài: Cốt lõi → Áp dụng thực tế → Quiz 8 câu → đánh dấu xong.</p>
  <input class="in" id="lq" placeholder="Tìm bài: ví dụ 'sharding', 'outbox', 'payment', 'Go'..." value="${esc(q)}">
@@ -334,7 +395,7 @@ function vLesson(id){
  const l=LESSONS[id];if(!l){main.innerHTML=`<h1>${esc(id)}</h1><p class="muted">Bài này chưa có nội dung trong dữ liệu.</p><a class="btn" href="#/lessons">← Bài học</a>`;return;}
  const wk=weekOf(id);const sib=wk?wk.lessons.filter(x=>LESSONS[x]):[];const ix=sib.indexOf(id);
  const mock=l.type==='case'?MOCKS.find(m=>m.caseId===id):null;
- main.innerHTML=`<div class="row"><a class="btn sm" href="#/lessons">← Bài học</a>${wk?`<a class="btn sm" href="#/week/${wk.w}">Tuần ${wk.w}</a>`:''}${ix>0?`<a class="btn sm" href="#/lesson/${sib[ix-1]}">← ${sib[ix-1]}</a>`:''}${ix>=0&&ix<sib.length-1?`<a class="btn sm" href="#/lesson/${sib[ix+1]}">${sib[ix+1]} →</a>`:''}${mock?`<a class="btn sm warn" href="#/mock/run/${mock.id}">Làm mock ${mock.id} trước khi đọc</a>`:''}</div>
+ main.innerHTML=`<div class="row"><a class="btn sm" href="#/lessons">← Bài học</a>${l.type==='job'?'<a class="btn sm" href="#/job/lessons">Tab Job OTS</a>':''}${wk?`<a class="btn sm" href="#/week/${wk.w}">Tuần ${wk.w}</a>`:''}${ix>0?`<a class="btn sm" href="#/lesson/${sib[ix-1]}">← ${sib[ix-1]}</a>`:''}${ix>=0&&ix<sib.length-1?`<a class="btn sm" href="#/lesson/${sib[ix+1]}">${sib[ix+1]} →</a>`:''}${mock?`<a class="btn sm warn" href="#/mock/run/${mock.id}">Làm mock ${mock.id} trước khi đọc</a>`:''}</div>
  <h1>${esc(id)} · ${esc(l.title)} <span class="badge">${TYPE_VI[l.type]||l.type}</span> <span class="badge g">${TOPIC_VI[l.topic]||l.topic||''}</span> <span class="badge g">${esc(l.time||'')}</span></h1>${l.goal?`<p class="sub"><b>Mục tiêu:</b> ${inline(l.goal)}</p>`:''}
  <div class="card">${md(l.md||'')}</div>
  ${l.apply?`<div class="card" style="border-color:var(--ok)"><details open><summary>Áp dụng thực tế</summary>${md(l.apply)}</details></div>`:''}
@@ -402,7 +463,7 @@ function drillPool(scope){const out=[];Object.values(LESSONS).forEach(l=>{(l.qui
   if(ok)out.push(Object.assign({},q,{_k:k,_l:l.id}));});});return out;}
 function vDrill(){
  const scope=S._dscope||'done';const n=S._dn||20;
- const chips=[['done','Bài đã học'],['all','Tất cả'],['wrong','Chỉ câu sai ('+Object.keys(S.drill.wrong).length+')'],['type:foundation','Nền tảng'],['type:block','Khối xây dựng'],['type:case','Case'],['type:knowledge','Kiến thức PV']].concat(Object.keys(TOPIC_VI).map(t=>['topic:'+t,TOPIC_VI[t]]));
+ const chips=[['done','Bài đã học'],['all','Tất cả'],['wrong','Chỉ câu sai ('+Object.keys(S.drill.wrong).length+')'],['type:foundation','Nền tảng'],['type:block','Khối xây dựng'],['type:case','Case'],['type:knowledge','Kiến thức PV'],['type:job','Job OTS']].concat(Object.keys(TOPIC_VI).map(t=>['topic:'+t,TOPIC_VI[t]]));
  const pool=drillPool(scope);const qs=shuffle(pool).slice(0,n);
  main.innerHTML=`<h1>Drill trộn câu hỏi</h1><p class="sub">Câu hỏi quiz từ mọi bài, trộn ngẫu nhiên. Câu sai được ghi lại để làm riêng. Phạm vi hiện tại: <b>${pool.length}</b> câu.</p>
  <div class="row">${chips.map(c=>`<span class="chip ${scope===c[0]?'on':''}" data-s="${c[0]}">${c[1]}</span>`).join('')}</div>
@@ -496,7 +557,7 @@ function vLab(id){
 /* ================= MOCK INTERVIEW ================= */
 function vMock(sub,arg){
  if(sub==='run')return vMockRun(arg);if(sub==='grade')return vMockGrade();if(sub==='result')return vMockResult(+arg);
- const groups=[['Bài kinh điển (có case tham chiếu)',MOCKS.filter(m=>/^M/.test(m.id))],['Đề lạ (chỉ có lời giải rút gọn)',MOCKS.filter(m=>/^X/.test(m.id))]];
+ const groups=[['Bài kinh điển (có case tham chiếu)',MOCKS.filter(m=>/^M/.test(m.id))],['Đề lạ (chỉ có lời giải rút gọn)',MOCKS.filter(m=>/^X/.test(m.id))],['Job OTS: nghiệp vụ hãng tàu',MOCKS.filter(m=>/^JM/.test(m.id))]].filter(g=>g[1].length);
  main.innerHTML=`<h1>Mock interview</h1><p class="sub">5 pha bấm giờ: làm rõ yêu cầu 5' → ước lượng 5' → thiết kế tổng thể 12' → đào sâu 18' → tổng kết 5'. Gõ ghi chú từng pha (hoặc vẽ ra giấy và chỉ gõ gạch đầu dòng). Cuối bài tự chấm theo checklist + rubric rồi mới xem lời giải. Đọc <a href="#/guide/method">Cách làm đề</a> trước lần đầu.</p>
  ${S.mockDraft?`<div class="card" style="background:var(--warn2)"><b>Đang có bài làm dở:</b> ${esc(S.mockDraft.id)} — <a class="btn sm primary" href="#/mock/run/${S.mockDraft.id}">Tiếp tục</a> <button class="btn sm" id="dropd">Bỏ</button></div>`:''}
  ${groups.map(g=>`<h2>${g[0]}</h2><table><thead><tr><th>Đề</th><th>Mức</th><th>Lần làm</th><th>Tốt nhất</th><th>Gần nhất</th><th></th></tr></thead><tbody>${g[1].map(m=>{const at=S.mocks.filter(x=>x.id===m.id);const best=at.length?Math.max(...at.map(x=>x.total)):null;const last=at[at.length-1];return `<tr><td><b>${m.id}</b> · ${esc(m.title)}${m.caseId?` <a class="small" href="#/lesson/${m.caseId}">${m.caseId}</a>`:''}</td><td>${'★'.repeat(m.level||1)}</td><td>${at.length||''}</td><td>${best!=null?`<span class="badge ${best>=12?'ok':best>=9?'':'warn'}">${best}/15</span>`:''}</td><td class="small">${last?last.d+' · '+last.total+'/15':''}</td><td><a class="btn sm primary" href="#/mock/run/${m.id}">Bắt đầu</a></td></tr>`;}).join('')}</tbody></table>`).join('')}
@@ -630,7 +691,7 @@ function vSettings(){
  <label class="task" style="border:0;align-self:end"><input type="checkbox" name="termHints" ${S.termHints!==false?'checked':''}><span>Gạch chân và giải thích thuật ngữ trong bài học (bấm vào từ để xem)</span></label></div>
  <div class="row"><button class="btn primary">Lưu</button></div></form></div>
  <div class="card"><h3>Sao lưu</h3><p class="small muted">Toàn bộ tiến độ (bài học, quiz, thẻ, mock, test, sổ tay, lab) nằm trong localStorage của trình duyệt này. Xuất JSON mỗi tuần.</p><div class="row"><button class="btn" id="exp">Xuất JSON</button><label class="btn">Nhập JSON<input type="file" id="imp" accept="application/json" style="display:none"></label><button class="btn bad" id="reset">Xóa toàn bộ tiến độ</button></div></div>
- <div class="card"><h3>Dữ liệu đã nạp</h3><table><tbody><tr><td>Bài học</td><td>${Object.keys(LESSONS).length} (${Object.entries(TYPE_VI).map(([k,v])=>v+': '+Object.values(LESSONS).filter(l=>l.type===k).length).join(' · ')})</td></tr><tr><td>Mock</td><td>${MOCKS.length}</td></tr><tr><td>Test kiến thức</td><td>${KTESTS.length} đề · ${KTESTS.reduce((a,t)=>a+t.qs.length,0)} câu</td></tr><tr><td>Hỏi nhanh</td><td>${ORAL.length}</td></tr><tr><td>Flashcard</td><td>${FLASH.length} bộ · ${FLASH.reduce((a,d)=>a+d.cards.length,0)} thẻ</td></tr><tr><td>Lab</td><td>${LABS.length}</td></tr><tr><td>Thuật ngữ</td><td>${GLOSSARY.length}</td></tr></tbody></table></div>
+ <div class="card"><h3>Dữ liệu đã nạp</h3><table><tbody><tr><td>Bài học</td><td>${Object.keys(LESSONS).length} (${Object.entries(TYPE_VI).map(([k,v])=>v+': '+Object.values(LESSONS).filter(l=>l.type===k).length).join(' · ')})</td></tr><tr><td>Mock</td><td>${MOCKS.length}</td></tr><tr><td>Test kiến thức</td><td>${KTESTS.length} đề · ${KTESTS.reduce((a,t)=>a+t.qs.length,0)} câu</td></tr><tr><td>Hỏi nhanh</td><td>${ORAL.length}</td></tr><tr><td>Flashcard</td><td>${FLASH.length} bộ · ${FLASH.reduce((a,d)=>a+d.cards.length,0)} thẻ</td></tr><tr><td>Lab</td><td>${LABS.length}</td></tr><tr><td>Thuật ngữ</td><td>${GLOSSARY.length}</td></tr><tr><td>Tab Job</td><td>${JOB?JOB.company+' · '+Object.values(LESSONS).filter(l=>l.type==='job').length+' bài · '+JOB_QA.length+' câu hỏi · '+MOCKS.filter(m=>/^JM/.test(m.id)).length+' mock':'chưa có'}</td></tr></tbody></table></div>
  <div class="card"><h3>Về bộ tài liệu</h3>${md(window.ABOUT||'')}</div>`;
  document.getElementById('sf').onsubmit=e=>{e.preventDefault();const f=new FormData(e.target);S.startDate=f.get('startDate');S.curWeek=+f.get('curWeek');S.newPerDay=+f.get('newPerDay');S.termHints=!!f.get('termHints');save();toast('Đã lưu');};
  document.getElementById('exp').onclick=()=>{const b=new Blob([JSON.stringify(S,null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='system-design-roadmap-'+today()+'.json';a.click();};
