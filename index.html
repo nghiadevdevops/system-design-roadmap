@@ -104,16 +104,22 @@ details summary{cursor:pointer;font-weight:600}
 <script src="data/phase2a.js"></script>
 <script src="data/phase2a2.js"></script>
 <script src="data/phase2b.js"></script>
+<script src="data/phase2c.js"></script>
 <script src="data/cases1.js"></script>
 <script src="data/cases2.js"></script>
+<script src="data/cases3.js"></script>
+<script src="data/mocks3.js"></script>
 <script src="data/knowledge.js"></script>
+<script src="data/knowledge2.js"></script>
 <script src="data/tests.js"></script>
 <script src="data/cards.js"></script>
+<script src="data/cards2.js"></script>
 <script src="data/labs.js"></script>
 <script src="data/mocks_extra.js"></script>
 <script src="data/guides.js"></script>
 <script src="data/glossary.js"></script>
 <script src="data/glossary2.js"></script>
+<script src="data/glossary3.js"></script>
 <script src="data/job.js"></script>
 <script src="data/job_syllabus.js"></script>
 <script src="data/job_lessons1.js"></script>
@@ -140,13 +146,13 @@ const fmtT=x=>{x=Math.max(0,Math.round(x));return String(Math.floor(x/60)).padSt
 
 /* ================= DATA ================= */
 const LESSONS={};
-[window.LESSONS_F,window.LESSONS_B1,window.LESSONS_B1B,window.LESSONS_B2,window.LESSONS_C1,window.LESSONS_C2,window.LESSONS_K,window.LESSONS_J1,window.LESSONS_J2,window.LESSONS_J3].forEach(arr=>(arr||[]).forEach(l=>{LESSONS[l.id]=l;}));
+[window.LESSONS_F,window.LESSONS_B1,window.LESSONS_B1B,window.LESSONS_B2,window.LESSONS_B2B,window.LESSONS_C1,window.LESSONS_C2,window.LESSONS_C3,window.LESSONS_K,window.LESSONS_K2,window.LESSONS_J1,window.LESSONS_J2,window.LESSONS_J3].forEach(arr=>(arr||[]).forEach(l=>{LESSONS[l.id]=l;}));
 const GLOSSARY=window.GLOSSARY||[];const JOB=window.JOB||null;const JOB_QA=window.JOB_QA||[];
 if(!JOB){['jobgrp','joblink'].forEach(id=>{const e=document.getElementById(id);if(e)e.remove();});}
 const MOCKS=window.MOCKS||[],KTESTS=window.KTESTS||[],ORAL=window.ORAL||[],FLASH=window.FLASH||[],LABS=window.LABS||[],GUIDES=window.GUIDES||{},ROADMAP=window.ROADMAP||[];
 const TYPE_VI={foundation:'Nền tảng',block:'Khối xây dựng',case:'Case study',knowledge:'Kiến thức PV',job:'Job OTS'};
 const PHASE_NAME={1:'Giai đoạn 1 · Nền tảng',2:'Giai đoạn 2 · Khối xây dựng',3:'Giai đoạn 3 · Bài toán kinh điển',4:'Giai đoạn 4 · Phỏng vấn & thực chiến',5:'Tab Job · OTS Full-stack'};
-const TOPIC_VI={net:'Mạng',os:'Hệ điều hành',db:'Database',cache:'Cache',queue:'Queue & messaging',api:'API',scale:'Scale & reliability',consistency:'Consistency',storage:'Storage',security:'Security',observability:'Observability',go:'Go',concurrency:'Concurrency',cloud:'Cloud',design:'Thiết kế',behavioral:'Behavioral',realtime:'Realtime',search:'Search',data:'Data',node:'Node.js/TS',frontend:'Frontend',testing:'Testing',devops:'CI/CD & Cloud',shipping:'Nghiệp vụ hãng tàu'};
+const TOPIC_VI={net:'Mạng',os:'Hệ điều hành',db:'Database',cache:'Cache',queue:'Queue & messaging',api:'API',scale:'Scale & reliability',consistency:'Consistency',storage:'Storage',security:'Security',observability:'Observability',go:'Go',concurrency:'Concurrency',cloud:'Cloud',design:'Thiết kế',behavioral:'Behavioral',realtime:'Realtime',search:'Search',data:'Data',ai:'AI/LLM',node:'Node.js/TS',frontend:'Frontend',testing:'Testing',devops:'CI/CD & Cloud',shipping:'Nghiệp vụ hãng tàu'};
 const PHASE_KEYS=['req','est','hld','deep','wrap'];
 function weekOf(id){return ROADMAP.find(w=>(w.lessons||[]).includes(id));}
 function allLessonIds(){const s=new Set();ROADMAP.forEach(w=>(w.lessons||[]).forEach(id=>{if(LESSONS[id])s.add(id);}));Object.keys(LESSONS).forEach(id=>s.add(id));return [...s];}

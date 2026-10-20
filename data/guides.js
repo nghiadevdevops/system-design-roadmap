@@ -118,6 +118,33 @@ At the end, grade me 0-3 on: requirements, estimation, high-level design, deep d
 10. Tranh cãi khi bị đẩy ngược thay vì cân nhắc rồi quyết.
 11. Không quản lý thời gian: pha 3 ăn 25 phút, không còn thời gian đào sâu.
 12. Kết thúc bằng xin lỗi thay vì tóm tắt và nêu bước tiếp theo.
+` },
+{ id: 'priority', title: 'Khi lịch phỏng vấn tới sớm: ưu tiên thế nào', md: `
+Lộ trình 24 tuần được thiết kế cho người có thời gian. Thực tế thì lịch phỏng vấn đến bất ngờ, và câu hỏi đúng lúc đó không phải "học thêm gì" mà **"bỏ gì"**. Dưới đây là thứ tự ưu tiên đã rút gọn theo thời gian còn lại.
+
+### Quy tắc chung
+- **Dừng lộ trình, đừng cố chạy song song.** Ghi lại tuần đang dở, chuyển hẳn sang chế độ chuẩn bị, xong thì quay lại đúng chỗ đó. Chạy hai thứ cùng lúc là làm hỏng cả hai.
+- **Mock đắt giá hơn đọc.** Một mock lạnh 45 phút có tự chấm bằng rubric dạy nhiều hơn ba giờ đọc case. Nếu chỉ còn vài buổi, dùng gần hết cho mock.
+- **Bài đã học mà quiz dưới 7/8 thì ôn lại; bài chưa học thì bỏ qua không tiếc.** Lấp lỗ hổng rẻ hơn mở mặt trận mới.
+
+### Còn 4 tuần trở lên
+Chạy trọn kế hoạch 4 tuần trong tab **Job** nếu đúng công ty đó, hoặc tự soạn theo cùng khuôn: tuần 1 ngôn ngữ và nền tảng của JD, tuần 2 framework và testing, tuần 3 dữ liệu và một mock nghiệp vụ, tuần 4 CI/CD, hai mock còn lại và behavioral. Mỗi tuần một mock lạnh, không ngoại lệ.
+
+### Còn 2 tuần
+- Ngày 1–2: đọc kỹ JD, điền ma trận khớp kỹ năng, liệt kê 5 chỗ yếu nhất và chỉ nhận 3 chỗ để vá.
+- Ngày 3–8: mỗi ngày một mock lạnh (ưu tiên đề trong **kho mock dự phòng** vì bạn chưa từng thấy), tự chấm, ghi 3 khác biệt, hôm sau đọc case tương ứng.
+- Ngày 9–11: viết và tập 6 câu chuyện STAR, mỗi câu dưới 2 phút; ôn flashcard D1, D2, D8, D9.
+- Ngày 12–13: một buổi mô phỏng đầy đủ liền mạch — test 30 phút, mock 45 phút, 3 câu behavioral.
+- Ngày 14: nghỉ, đọc checklist ngày phỏng vấn, ngủ sớm.
+
+### Còn 1 tuần
+Bỏ hết phần đọc mới. Lịch cố định: 3 mock lạnh (một đề dễ, một trung bình, một khó), 1 bài test kiến thức để biết topic yếu, ôn **duy nhất** các topic dưới 60% trong kết quả test, viết STAR, tập nói pitch 90 giây. Đọc lại mục "12 sai lầm" ngay trước buổi phỏng vấn.
+
+### Còn 2 ngày
+Không học gì mới. Làm đúng ba việc: (1) một mock lạnh để làm nóng khung 5 pha, (2) đọc lại flashcard số liệu (D1, D2) và bộ trade-off (D4) trong 30 phút, (3) chuẩn bị câu hỏi ngược cho người phỏng vấn và kiểm tra thiết bị, đường truyền, giấy bút. Phần còn lại dành cho ngủ.
+
+### Sau buổi phỏng vấn, dù kết quả thế nào
+Trong vòng 2 giờ, ghi vào Sổ tay: đề gì, bạn trả lời thế nào, câu nào bị vặn mà lúng túng, và ba thứ sẽ làm khác. Đây là nguồn dữ liệu tốt nhất bạn có để chỉnh lộ trình, và nó bay hơi rất nhanh nếu không ghi ngay.
 ` }
 ]},
 

@@ -3,7 +3,7 @@
 const fs = require('fs'), path = require('path'), vm = require('vm');
 let bad = 0;
 const err = (f, m) => { bad++; console.log('  ✗ ' + f + ': ' + m); };
-const TOPICS = new Set(['net','os','db','cache','queue','api','scale','consistency','storage','security','observability','go','concurrency','cloud','design','behavioral','realtime','search','data','node','frontend','testing','devops','shipping']);
+const TOPICS = new Set(['net','os','db','cache','queue','api','scale','consistency','storage','security','observability','go','concurrency','cloud','design','behavioral','realtime','search','data','node','frontend','testing','devops','shipping','ai']);
 const TYPES = new Set(['foundation','block','case','knowledge','job']);
 for (const file of process.argv.slice(2)) {
   const src = fs.readFileSync(file, 'utf8');

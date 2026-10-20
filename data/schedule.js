@@ -7,19 +7,27 @@ window.PRINCIPLES = `
 5. **Áp dụng vào công việc trong tuần.** Mỗi bài có mục "Áp dụng vào hệ thống SBOM của bạn". Thứ Sáu chọn một việc: đo một metric, thêm một timeout, viết một ADR. Ghi vào Sổ tay thiết kế.
 6. **Ôn ngắt quãng.** Flashcard 10–15 phút mỗi ngày (Leitner 5 hộp). Số liệu không ôn sau 7 ngày coi như chưa học.
 7. **Sổ tay là tài sản.** Mọi quyết định, sự cố, bài học ghi vào Sổ tay theo mẫu. Đây chính là kho câu chuyện STAR cho vòng behavioral và là design doc nháp cho công việc.
+8. **Giữ chỗ cho tuần trượt.** Không ai đi hết 24 tuần mà không có tuần bận việc hoặc ốm. Tuần 13 và tuần 20 là **tuần đệm**: nếu đang đúng lịch thì học bình thường, nếu đang nợ thì dùng để bù rồi mới sang giai đoạn sau. Trượt một tuần thì **giãn lịch**, đừng bỏ bài — bỏ bài là chỗ thủng duy nhất không tự lành.
+9. **Ưu tiên lịch phỏng vấn thật.** Khi có lịch phỏng vấn trong 4 tuần tới, tạm dừng lộ trình 24 tuần, chạy kế hoạch ngắn của tab Job (hoặc 4 tuần tự soạn cho công ty đó), rồi quay lại đúng tuần đang dở. Lộ trình phục vụ buổi phỏng vấn, không phải ngược lại.
 `;
 
 window.PHASE_OVERVIEW = `
 | Giai đoạn | Tuần | Mục tiêu | Đầu ra đo được | Giờ/tuần |
 |---|---|---|---|---|
 | 1. Nền tảng | 1–5 | Số liệu, ước lượng, mạng, OS, DB, API, cache, queue, độ tin cậy, mở rộng | KT1 ≥ 21/30; 4 lab xong; thẻ D1–D2 ≥ 80% ở hộp ≥ 3 | 8–10 |
-| 2. Khối xây dựng | 6–13 | 20 building block: replication, sharding, consistency, consensus, giao dịch phân tán, broker, rate limit, ID, search, storage, data, observability, security, microservices, resilience, deploy, multi-tenant, realtime | KT2 ≥ 22/30; 4 mock lạnh trung bình ≥ 8/15; 6 lab | 9–11 |
-| 3. Bài toán kinh điển | 14–20 | 19 case study (gồm bài SBOM của chính bạn); mỗi tuần 1 mock lạnh + đọc 3 case + làm lại | KT3 ≥ 24/30; mock trung bình ≥ 10/15; M1 làm lại hơn baseline ≥ 4 điểm | 9–11 |
-| 4. Phỏng vấn & thực chiến | 21–24 | Go, concurrency, SQL, LLD, networking, OS, cloud, testing, behavioral, postmortem, design doc; 6 đề lạ | KT4 ≥ 26/30; đề lạ trung bình ≥ 11/15; 6 câu chuyện STAR viết xong | 10–12 |
+| 2. Khối xây dựng | 6–13 | 22 building block: replication, sharding, consistency, consensus, giao dịch phân tán, broker, rate limit, ID, search, storage, data, observability, security, microservices, resilience, deploy, multi-tenant, realtime, **hệ có LLM/RAG**, **đa vùng & thảm hoạ** | KT2 ≥ 22/30; 7 mock lạnh trung bình ≥ 8/15; 6 lab | 9–11 |
+| 3. Bài toán kinh điển | 14–20 | 23 case study (gồm bài SBOM của chính bạn, trợ lý RAG, distributed cache, top-K/trending, ví điện tử); mỗi tuần 1 mock lạnh + đọc case + làm lại | KT3 ≥ 24/30; mock trung bình ≥ 10/15; M1 làm lại hơn baseline ≥ 4 điểm | 9–11 |
+| 4. Phỏng vấn & thực chiến | 21–24 | Go, concurrency, SQL, LLD, networking, OS, cloud, testing, behavioral, postmortem, design doc, **vòng coding**; 6 đề lạ | KT4 ≥ 26/30; đề lạ trung bình ≥ 11/15; 6 câu chuyện STAR viết xong | 10–12 |
 
 **Tuần 1 bắt buộc có baseline:** làm KT0 (30 phút) và mock M1 (URL shortener) **lạnh, không mở gợi ý**, lưu kết quả. Tuần 14 làm lại M1 để thấy khoảng cách. Người đã có kinh nghiệm: KT0 ≥ 22/30 thì có thể lướt Giai đoạn 1 trong 2 tuần (đọc "Cốt lõi" + làm quiz, bỏ qua bài nào quiz ≥ 7/8), nhưng vẫn làm đủ lab L2–L4.
 
 **Điều kiện chuyển giai đoạn** ghi ở cột "Đầu ra đo được". Không đạt thì kéo dài 1–2 tuần, không bỏ bài. Mọi thứ trong app chạy offline, tiến độ lưu trong trình duyệt; xuất JSON ở trang Cài đặt mỗi tuần.
+
+**Tuần đệm:** tuần 13 và tuần 20 vừa là tuần học bình thường vừa là chỗ bù. Đang đúng lịch thì học như lịch; đang nợ bài, nợ lab hay nợ mock thì dùng trọn tuần đó để bù rồi mới sang giai đoạn sau. Đừng dồn nợ qua mốc kiểm tra.
+
+**Kho mock dự phòng:** lộ trình xếp lịch 22 trong 29 đề. Bảy đề còn lại — **M4** (ID generator), **M9** (video), **M12** (metrics), **M13** (ad click), **M15** (message queue), **M17** (crawler), **M22** (top-K/trending) — là kho dùng khi bạn muốn thêm lượt luyện, khi một tuần nhẹ hơn dự kiến, hoặc khi cần một đề *chưa từng thấy* để tự kiểm trước ngày phỏng vấn thật. Số lần mock là biến ảnh hưởng mạnh nhất tới điểm thật, nên tuần nào còn thời gian thì lấy một đề trong kho này ra làm lạnh.
+
+**Khi có lịch phỏng vấn thật trong 4 tuần tới:** dừng lộ trình, chuyển sang tab Job (kế hoạch 4 tuần theo JD) hoặc tự soạn 4 tuần cho công ty đó, rồi quay lại đúng tuần đang dở. Chi tiết cách ưu tiên ở Hướng dẫn → Cách làm đề → "Khi lịch phỏng vấn tới sớm".
 `;
 
 window.RUBRIC = [
@@ -40,25 +48,25 @@ window.ROADMAP = [
   W(4, 1, ['F7', 'F8'], { labs: ['L3'], focus: 'Cache và hàng đợi: hai khối xuất hiện trong mọi bài thiết kế.' }),
   W(5, 1, ['F9', 'F10'], { labs: ['L4'], ktest: 'KT1', focus: 'Độ tin cậy và mở rộng. Checkpoint KT1.', milestone: 'Hết Giai đoạn 1: KT1 ≥ 21/30, 4 lab xong, thẻ D1–D2 ≥ 80% hộp ≥ 3' }),
 
-  W(6, 2, ['B1', 'B2', 'B3'], { focus: 'Load balancer/CDN, replication, sharding.' }),
+  W(6, 2, ['B1', 'B2', 'B3'], { mocks: ['M21'], focus: 'Load balancer/CDN, replication, sharding. Mock lạnh M21 (distributed cache) ngay sau khi học consistent hashing.' }),
   W(7, 2, ['B4', 'B5'], { labs: ['L5'], mocks: ['M3'], focus: 'NoSQL/LSM và mô hình nhất quán. Mock lạnh M3 (key-value store) ngay sau khi học consistent hashing + quorum.' }),
-  W(8, 2, ['B6', 'B7'], { labs: ['L6'], focus: 'Consensus, lock phân tán, giao dịch phân tán, outbox. Lab outbox.' }),
+  W(8, 2, ['B6', 'B7', 'B22'], { labs: ['L6'], mocks: ['M23'], focus: 'Consensus, lock phân tán, giao dịch phân tán, outbox; đa vùng và thảm hoạ (RPO/RTO, failover, fencing). Lab outbox. Mock lạnh M23 (ví điện tử) để tập dùng saga và idempotency.' }),
   W(9, 2, ['B8', 'B9'], { labs: ['L7'], mocks: ['M2'], focus: 'Broker chuyên sâu và rate limiting. Mock lạnh M2 (rate limiter).' }),
-  W(10, 2, ['B10', 'B11'], { labs: ['L8'], focus: 'ID, thời gian, thứ tự; tìm kiếm và đánh chỉ mục.' }),
+  W(10, 2, ['B10', 'B11', 'B21'], { labs: ['L8'], mocks: ['M20'], focus: 'ID, thời gian, thứ tự; tìm kiếm và đánh chỉ mục; hệ thống có LLM (RAG, vector index, token, eval). Mock lạnh M20 (trợ lý RAG) ngay sau B21.' }),
   W(11, 2, ['B12', 'B13', 'B14'], { labs: ['L9'], mocks: ['M5'], focus: 'Object storage, xử lý dữ liệu lớn, observability. Mock lạnh M5 (notification).' }),
-  W(12, 2, ['B15', 'B16', 'B17'], { labs: ['L10'], ktest: 'KT2', focus: 'Security, microservices vs monolith, resilience chuyên sâu. Checkpoint KT2.' }),
-  W(13, 2, ['B18', 'B19', 'B20'], { mocks: ['M6'], focus: 'Deploy/vận hành, SaaS multi-tenant, realtime. Mock lạnh M6 (news feed).', milestone: 'Hết Giai đoạn 2: KT2 ≥ 22/30, 4 mock trung bình ≥ 8/15, 6 lab' }),
+  W(12, 2, ['B15', 'B16', 'B17'], { labs: ['L10'], mocks: ['M8'], ktest: 'KT2', focus: 'Security, microservices vs monolith, resilience chuyên sâu. Mock lạnh M8 (autocomplete). Checkpoint KT2.' }),
+  W(13, 2, ['B18', 'B19', 'B20'], { mocks: ['M6'], focus: 'Deploy/vận hành, SaaS multi-tenant, realtime. Mock lạnh M6 (news feed). Tuần đệm: nếu đang trượt lịch thì dùng tuần này để bù bài và lab còn nợ trước khi sang Giai đoạn 3.', milestone: 'Hết Giai đoạn 2: KT2 ≥ 22/30, 7 mock trung bình ≥ 8/15, 6 lab' }),
 
-  W(14, 3, ['C1', 'C2', 'C3'], { mocks: ['M1'], labs: ['L11'], focus: 'Làm lại M1 lạnh rồi so với tuần 1. Đọc C1–C3 sau khi làm.', milestone: 'M1 lần 2 hơn baseline ≥ 4 điểm; nếu không, đọc lại F2, F7, B3' }),
+  W(14, 3, ['C1', 'C2', 'C3', 'C21'], { mocks: ['M1'], labs: ['L11'], focus: 'Làm lại M1 lạnh rồi so với tuần 1. Đọc C1–C3 và C21 (distributed cache, cùng họ với C3) sau khi làm.', milestone: 'M1 lần 2 hơn baseline ≥ 4 điểm; nếu không, đọc lại F2, F7, B3' }),
   W(15, 3, ['C4', 'C5', 'C6'], { mocks: ['M7'], focus: 'Mock lạnh M7 (chat). Case: ID generator, notification, news feed.' }),
   W(16, 3, ['C7', 'C8', 'C9'], { mocks: ['M10'], focus: 'Mock lạnh M10 (cloud storage). Case: chat, autocomplete, video.' }),
-  W(17, 3, ['C10', 'C11', 'C12'], { mocks: ['M11'], focus: 'Mock lạnh M11 (payment). Case: drive, payment, metrics.' }),
-  W(18, 3, ['C13', 'C14', 'C15'], { mocks: ['M14'], labs: ['L12'], focus: 'Mock lạnh M14 (proximity). Case: ad aggregation, proximity, message queue. Bắt đầu capstone L12.' }),
+  W(17, 3, ['C10', 'C11', 'C12', 'C23'], { mocks: ['M11'], focus: 'Mock lạnh M11 (payment). Case: drive, payment, metrics, ví điện tử và sổ cái bút toán kép (C23 đọc ngay sau C11).' }),
+  W(18, 3, ['C13', 'C14', 'C15', 'C22'], { mocks: ['M14'], labs: ['L12'], focus: 'Mock lạnh M14 (proximity). Case: ad aggregation, proximity, message queue, top-K/trending (C22 đọc ngay sau C13). Bắt đầu capstone L12.' }),
   W(19, 3, ['C16', 'C17', 'C18'], { mocks: ['M16', 'M18'], focus: 'Mock lạnh M16 (booking) và M18 (scheduler). Case: booking, crawler, job scheduler.' }),
-  W(20, 3, ['C19'], { mocks: ['M19'], ktest: 'KT3', focus: 'Capstone: thiết kế lại hệ SBOM của chính bạn (M19 rồi đọc C19). Hoàn thành L12. Checkpoint KT3.', milestone: 'Hết Giai đoạn 3: KT3 ≥ 24/30, mock trung bình ≥ 10/15, L12 chạy được' }),
+  W(20, 3, ['C19', 'C20'], { mocks: ['M19'], ktest: 'KT3', focus: 'Capstone: thiết kế lại hệ SBOM của chính bạn (M19 rồi đọc C19), rồi đọc C20 (trợ lý RAG) như phần mở rộng AI cho chính hệ đó. Hoàn thành L12. Checkpoint KT3. Tuần đệm: còn nợ case nào thì bù ở đây.', milestone: 'Hết Giai đoạn 3: KT3 ≥ 24/30, mock trung bình ≥ 10/15, L12 chạy được' }),
 
   W(21, 4, ['K1', 'K2', 'K3'], { mocks: ['X1', 'X2'], focus: 'Go, concurrency, SQL thực chiến. Hai đề lạ X1, X2.' }),
-  W(22, 4, ['K4', 'K5', 'K6'], { mocks: ['X3', 'X4'], focus: 'LLD/OOD, networking, OS. Đề lạ X3, X4.' }),
+  W(22, 4, ['K4', 'K5', 'K6', 'K13'], { mocks: ['X3', 'X4'], focus: 'LLD/OOD, networking, OS, và vòng coding (10 dạng bài, design in code, cách nói khi đang gõ). Đề lạ X3, X4.' }),
   W(23, 4, ['K7', 'K8', 'K9', 'K10'], { mocks: ['X5'], focus: 'Cloud, testing, behavioral STAR, postmortem. Đề lạ X5 + làm lại mock điểm thấp nhất.' }),
   W(24, 4, ['K11', 'K12'], { mocks: ['X6'], ktest: 'KT4', focus: 'Design doc/ADR và ngày phỏng vấn. Đề lạ X6 + mô phỏng vòng đầy đủ: KT4 40 phút → mock 45 phút → 6 câu behavioral 30 phút.', milestone: 'Hết lộ trình: KT4 ≥ 26/30, đề lạ trung bình ≥ 11/15, 6 câu chuyện STAR, sổ tay ≥ 20 mục' })
 ];
@@ -106,7 +114,7 @@ window.WEEKLY_TEMPLATE = {
 window.ABOUT = `
 **System Design Roadmap** là bộ tài liệu tự học 24 tuần cho kỹ sư backend chuẩn bị phỏng vấn system design và kiến thức backend ở mức mid–senior, với mục tiêu kép: qua phỏng vấn và dùng được ngay vào công việc.
 
-Mọi thứ nằm trong trình duyệt: 61 bài học (10 nền tảng, 20 khối xây dựng, 19 case study, 12 kiến thức phỏng vấn), 25 đề mock interview bấm giờ theo 5 pha có rubric, 5 bài test kiến thức, 90 câu hỏi nhanh, hơn 190 flashcard, 12 lab Go, máy tính ước lượng, sổ tay thiết kế. Không có backend; tiến độ lưu trong localStorage, xuất/nhập JSON ở trang này.
+Mọi thứ nằm trong trình duyệt: 68 bài học (10 nền tảng, 22 khối xây dựng, 23 case study, 13 kiến thức phỏng vấn) cộng 10 bài của tab Job, 29 đề mock interview bấm giờ theo 5 pha có rubric (cộng 4 mock nghiệp vụ trong tab Job), 5 bài test kiến thức, 90 câu hỏi nhanh, gần 250 flashcard, 12 lab Go, hơn 400 thuật ngữ, máy tính ước lượng, sổ tay thiết kế. Không có backend; tiến độ lưu trong localStorage, xuất/nhập JSON ở trang này.
 
-Tài liệu tham khảo chính khi soạn: Designing Data-Intensive Applications (Kleppmann), System Design Interview vol. 1–2 (Alex Xu), Site Reliability Engineering (Google), Release It! (Nygard), tài liệu Postgres/Redis/RabbitMQ/Kafka chính thức, và sự cố thật trong hệ thống SBOM của người học.
+Tài liệu tham khảo chính khi soạn: Designing Data-Intensive Applications (Kleppmann), System Design Interview vol. 1–2 (Alex Xu), Site Reliability Engineering (Google), Release It! (Nygard), tài liệu Postgres/Redis/RabbitMQ/Kafka/pgvector chính thức, và sự cố thật trong hệ thống SBOM của người học.
 `;

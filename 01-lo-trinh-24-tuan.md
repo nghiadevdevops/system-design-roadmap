@@ -10,18 +10,26 @@ Bản in của lộ trình trong app `index.html` (mở app để học, làm qu
 5. **Áp dụng vào công việc trong tuần.** Mỗi bài có mục "Áp dụng vào hệ thống SBOM của bạn". Thứ Sáu chọn một việc: đo một metric, thêm một timeout, viết một ADR. Ghi vào Sổ tay thiết kế.
 6. **Ôn ngắt quãng.** Flashcard 10–15 phút mỗi ngày (Leitner 5 hộp). Số liệu không ôn sau 7 ngày coi như chưa học.
 7. **Sổ tay là tài sản.** Mọi quyết định, sự cố, bài học ghi vào Sổ tay theo mẫu. Đây chính là kho câu chuyện STAR cho vòng behavioral và là design doc nháp cho công việc.
+8. **Giữ chỗ cho tuần trượt.** Không ai đi hết 24 tuần mà không có tuần bận việc hoặc ốm. Tuần 13 và tuần 20 là **tuần đệm**: nếu đang đúng lịch thì học bình thường, nếu đang nợ thì dùng để bù rồi mới sang giai đoạn sau. Trượt một tuần thì **giãn lịch**, đừng bỏ bài — bỏ bài là chỗ thủng duy nhất không tự lành.
+9. **Ưu tiên lịch phỏng vấn thật.** Khi có lịch phỏng vấn trong 4 tuần tới, tạm dừng lộ trình 24 tuần, chạy kế hoạch ngắn của tab Job (hoặc 4 tuần tự soạn cho công ty đó), rồi quay lại đúng tuần đang dở. Lộ trình phục vụ buổi phỏng vấn, không phải ngược lại.
 
 ## Tổng quan
 | Giai đoạn | Tuần | Mục tiêu | Đầu ra đo được | Giờ/tuần |
 |---|---|---|---|---|
 | 1. Nền tảng | 1–5 | Số liệu, ước lượng, mạng, OS, DB, API, cache, queue, độ tin cậy, mở rộng | KT1 ≥ 21/30; 4 lab xong; thẻ D1–D2 ≥ 80% ở hộp ≥ 3 | 8–10 |
-| 2. Khối xây dựng | 6–13 | 20 building block: replication, sharding, consistency, consensus, giao dịch phân tán, broker, rate limit, ID, search, storage, data, observability, security, microservices, resilience, deploy, multi-tenant, realtime | KT2 ≥ 22/30; 4 mock lạnh trung bình ≥ 8/15; 6 lab | 9–11 |
-| 3. Bài toán kinh điển | 14–20 | 19 case study (gồm bài SBOM của chính bạn); mỗi tuần 1 mock lạnh + đọc 3 case + làm lại | KT3 ≥ 24/30; mock trung bình ≥ 10/15; M1 làm lại hơn baseline ≥ 4 điểm | 9–11 |
-| 4. Phỏng vấn & thực chiến | 21–24 | Go, concurrency, SQL, LLD, networking, OS, cloud, testing, behavioral, postmortem, design doc; 6 đề lạ | KT4 ≥ 26/30; đề lạ trung bình ≥ 11/15; 6 câu chuyện STAR viết xong | 10–12 |
+| 2. Khối xây dựng | 6–13 | 22 building block: replication, sharding, consistency, consensus, giao dịch phân tán, broker, rate limit, ID, search, storage, data, observability, security, microservices, resilience, deploy, multi-tenant, realtime, **hệ có LLM/RAG**, **đa vùng & thảm hoạ** | KT2 ≥ 22/30; 7 mock lạnh trung bình ≥ 8/15; 6 lab | 9–11 |
+| 3. Bài toán kinh điển | 14–20 | 23 case study (gồm bài SBOM của chính bạn, trợ lý RAG, distributed cache, top-K/trending, ví điện tử); mỗi tuần 1 mock lạnh + đọc case + làm lại | KT3 ≥ 24/30; mock trung bình ≥ 10/15; M1 làm lại hơn baseline ≥ 4 điểm | 9–11 |
+| 4. Phỏng vấn & thực chiến | 21–24 | Go, concurrency, SQL, LLD, networking, OS, cloud, testing, behavioral, postmortem, design doc, **vòng coding**; 6 đề lạ | KT4 ≥ 26/30; đề lạ trung bình ≥ 11/15; 6 câu chuyện STAR viết xong | 10–12 |
 
 **Tuần 1 bắt buộc có baseline:** làm KT0 (30 phút) và mock M1 (URL shortener) **lạnh, không mở gợi ý**, lưu kết quả. Tuần 14 làm lại M1 để thấy khoảng cách. Người đã có kinh nghiệm: KT0 ≥ 22/30 thì có thể lướt Giai đoạn 1 trong 2 tuần (đọc "Cốt lõi" + làm quiz, bỏ qua bài nào quiz ≥ 7/8), nhưng vẫn làm đủ lab L2–L4.
 
 **Điều kiện chuyển giai đoạn** ghi ở cột "Đầu ra đo được". Không đạt thì kéo dài 1–2 tuần, không bỏ bài. Mọi thứ trong app chạy offline, tiến độ lưu trong trình duyệt; xuất JSON ở trang Cài đặt mỗi tuần.
+
+**Tuần đệm:** tuần 13 và tuần 20 vừa là tuần học bình thường vừa là chỗ bù. Đang đúng lịch thì học như lịch; đang nợ bài, nợ lab hay nợ mock thì dùng trọn tuần đó để bù rồi mới sang giai đoạn sau. Đừng dồn nợ qua mốc kiểm tra.
+
+**Kho mock dự phòng:** lộ trình xếp lịch 22 trong 29 đề. Bảy đề còn lại — **M4** (ID generator), **M9** (video), **M12** (metrics), **M13** (ad click), **M15** (message queue), **M17** (crawler), **M22** (top-K/trending) — là kho dùng khi bạn muốn thêm lượt luyện, khi một tuần nhẹ hơn dự kiến, hoặc khi cần một đề *chưa từng thấy* để tự kiểm trước ngày phỏng vấn thật. Số lần mock là biến ảnh hưởng mạnh nhất tới điểm thật, nên tuần nào còn thời gian thì lấy một đề trong kho này ra làm lạnh.
+
+**Khi có lịch phỏng vấn thật trong 4 tuần tới:** dừng lộ trình, chuyển sang tab Job (kế hoạch 4 tuần theo JD) hoặc tự soạn 4 tuần cho công ty đó, rồi quay lại đúng tuần đang dở. Chi tiết cách ưu tiên ở Hướng dẫn → Cách làm đề → "Khi lịch phỏng vấn tới sớm".
 
 ## Giai đoạn 1 · Nền tảng (tuần 1–5)
 
@@ -87,11 +95,12 @@ Bản in của lộ trình trong app `index.html` (mở app để học, làm qu
 - Chủ nhật: nghỉ
 
 ### Tuần 6
-*Load balancer/CDN, replication, sharding.*
+*Load balancer/CDN, replication, sharding. Mock lạnh M21 (distributed cache) ngay sau khi học consistent hashing.*
 
 - **B1** Load balancer, reverse proxy, API gateway, CDN — Vẽ được lớp biên (edge) của một SaaS: chọn đúng L4/L7, thuật toán cân bằng, health check, nơi kết thúc TLS, cách CDN cache và purge; giải thích được vì sao gọi nội bộ không được đi qua hostname public.
 - **B2** Replication: leader-follower, multi-leader, leaderless; sync/async; lag; failover — Chọn được kiểu replication và mức đồng bộ cho một hệ cụ thể, kể tên 3 bất thường do replication lag và cách chặn từng cái, mô tả failover an toàn (fencing) và các tham số Postgres streaming replication hay gây sự cố.
 - **B3** Partitioning & sharding: key range, hash, consistent hashing, rebalancing, hot spot, secondary index — Chọn và bảo vệ được shard key cho một hệ multi-tenant, vẽ consistent hashing với virtual node, giải thích rebalancing và hot spot, phân biệt secondary index local/global, và áp dụng declarative partitioning của Postgres cho bảng hàng chục triệu dòng.
+- Mock **M21** Design a distributed cache
 
 ### Tuần 7
 *NoSQL/LSM và mô hình nhất quán. Mock lạnh M3 (key-value store) ngay sau khi học consistent hashing + quorum.*
@@ -102,11 +111,13 @@ Bản in của lộ trình trong app `index.html` (mở app để học, làm qu
 - Mock **M3** Design a key-value store
 
 ### Tuần 8
-*Consensus, lock phân tán, giao dịch phân tán, outbox. Lab outbox.*
+*Consensus, lock phân tán, giao dịch phân tán, outbox; đa vùng và thảm hoạ (RPO/RTO, failover, fencing). Lab outbox. Mock lạnh M23 (ví điện tử) để tập dùng saga và idempotency.*
 
 - **B6** Consensus và điều phối: Raft, etcd/ZooKeeper, distributed lock, leader election, lease, fencing token — Giải thích được Raft (term, election, log replication, commit index, 2f+1) trong 3 phút; chọn đúng cơ chế lock/leader election cho job scheduler nhiều instance và nói rõ vì sao Redis lock không đủ cho correctness nếu thiếu fencing token.
 - **B7** Giao dịch phân tán: 2PC, saga, outbox, CDC, idempotency, exactly-once — Nhận ra dual write trong code của mình; chọn đúng giữa 2PC, saga và outbox cho từng luồng; thiết kế được outbox + idempotent consumer hoàn chỉnh (bảng, relay, inbox) và nói rõ exactly-once của Kafka bao phủ tới đâu.
+- **B22** Đa vùng và thảm hoạ: active-passive vs active-active, RPO/RTO, failover, chủ quyền dữ liệu, diễn tập — Chọn được một trong bốn mức đa vùng kèm RPO/RTO và chi phí tương ứng; giải thích vì sao active-active ghi ở nhiều vùng là bài toán nhất quán chứ không phải bài toán hạ tầng; thiết kế được quy trình failover có runbook và diễn tập; xử lý được yêu cầu dữ liệu phải ở lại một quốc gia.
 - Lab **L6** Outbox pattern Postgres + relay (3,5 giờ) — Cài transactional outbox: ghi order và event cùng transaction, relay poll bằng SKIP LOCKED và publish at-least-once, consumer idempotent; chứng minh không mất và không "publish trước commit".
+- Mock **M23** Design a digital wallet with a ledger
 
 ### Tuần 9
 *Broker chuyên sâu và rate limiting. Mock lạnh M2 (rate limiter).*
@@ -117,11 +128,13 @@ Bản in của lộ trình trong app `index.html` (mở app để học, làm qu
 - Mock **M2** Design a distributed rate limiter
 
 ### Tuần 10
-*ID, thời gian, thứ tự; tìm kiếm và đánh chỉ mục.*
+*ID, thời gian, thứ tự; tìm kiếm và đánh chỉ mục; hệ thống có LLM (RAG, vector index, token, eval). Mock lạnh M20 (trợ lý RAG) ngay sau B21.*
 
 - **B10** Sinh ID duy nhất, thời gian và thứ tự: UUID v4/v7, Snowflake, ULID, ticket server; clock skew, Lamport, HLC — Chọn được kiểu ID cho từng bảng theo 5 tiêu chí (unique, sortable, kích thước, lộ thông tin, sinh offline) và giải thích chi phí index của UUID v4; trình bày Snowflake đến từng bit và cách xử lý clock going backwards; phân biệt wall clock, monotonic clock, Lamport, vector clock, HLC và biết khi nào cần cái nào.
 - **B11** Tìm kiếm và đánh chỉ mục: inverted index, Elasticsearch, autocomplete, full-text trong Postgres — Chọn đúng công cụ tìm kiếm cho một bài toán cụ thể (Postgres tsvector/pg_trgm hay Elasticsearch), giải thích được inverted index, relevance BM25, near real-time refresh và cách đồng bộ dữ liệu từ DB sang search index mà không mất dữ liệu.
+- **B21** Thiết kế hệ thống có LLM: RAG, vector index, embedding pipeline, cache ngữ nghĩa, ngân sách token, guardrail, eval — Vẽ được kiến trúc RAG đầy đủ trong 5 phút và nói rõ từng chỗ hỏng; ước lượng được dung lượng vector, chi phí token và độ trễ p95 của một tính năng hỏi đáp; chọn được giữa pgvector và vector DB riêng kèm lý do; nêu được cách đo chất lượng bằng eval set thay vì cảm tính.
 - Lab **L8** Snowflake ID + ULID (2,5 giờ) — Cài Snowflake 64-bit và ULID, xử lý clock đi lùi, benchmark, kiểm tra tính sortable và đo ảnh hưởng lên index B-tree so với UUIDv4.
+- Mock **M20** Design an AI assistant over private documents (RAG)
 
 ### Tuần 11
 *Object storage, xử lý dữ liệu lớn, observability. Mock lạnh M5 (notification).*
@@ -133,22 +146,23 @@ Bản in của lộ trình trong app `index.html` (mở app để học, làm qu
 - Mock **M5** Design a notification system
 
 ### Tuần 12
-*Security, microservices vs monolith, resilience chuyên sâu. Checkpoint KT2.*
+*Security, microservices vs monolith, resilience chuyên sâu. Mock lạnh M8 (autocomplete). Checkpoint KT2.*
 
 - **B15** Bảo mật trong thiết kế: authn, session vs JWT, OAuth2/OIDC, RBAC/ABAC, multi-tenant isolation, TLS/mTLS, secrets, audit — Chọn và bảo vệ được cơ chế xác thực/uỷ quyền phù hợp (session vs JWT, OAuth2 flow, RBAC/ABAC), thiết kế cách ly tenant ở tầng dữ liệu, quản lý secret và audit log đúng cách, và trả lời gọn các câu hỏi bảo mật trong phỏng vấn system design.
 - **B16** Microservices vs monolith: ranh giới, giao tiếp, data ownership, API composition, strangler fig, modular monolith — Lập luận được khi nào tách dịch vụ và khi nào không, vẽ ranh giới theo bounded context với data ownership rõ ràng, chọn sync hay async cho từng cạnh giao tiếp, và trình bày kế hoạch strangler fig để tách dần một monolith mà không dừng kinh doanh.
 - **B17** Resilience chuyên sâu: timeout hierarchy, retry budget, circuit breaker, bulkhead, load shedding, backpressure, graceful shutdown, chaos — Thiết kế được bộ cơ chế chịu lỗi có thông số cụ thể (timeout lồng nhau, retry budget, circuit breaker, bulkhead, load shedding, backpressure, graceful shutdown) cho một dịch vụ Go, và giải thích vì sao từng cơ chế ngăn một lỗi nhỏ lan thành sự cố toàn hệ.
 - Lab **L10** Distributed cron không lỡ tick (3,5 giờ) — Xây scheduler chạy trên 2 instance với lease trong Postgres: đúng 1 instance chạy mỗi tick, kill 1 instance giữa chừng vẫn không double-run và không miss, có catch-up sau downtime.
+- Mock **M8** Design a search autocomplete
 - Test **KT2** Checkpoint khối xây dựng (tuần 13) (30 câu, 35 phút)
 
 ### Tuần 13
-*Deploy/vận hành, SaaS multi-tenant, realtime. Mock lạnh M6 (news feed).*
+*Deploy/vận hành, SaaS multi-tenant, realtime. Mock lạnh M6 (news feed). Tuần đệm: nếu đang trượt lịch thì dùng tuần này để bù bài và lab còn nợ trước khi sang Giai đoạn 3.*
 
 - **B18** Triển khai và vận hành: rolling/blue-green/canary, feature flag, schema migration expand-contract, container/K8s cơ bản, serverless trade-off, IaC — Chọn chiến lược deploy phù hợp với rủi ro và chi phí, viết được kế hoạch schema migration không downtime theo expand-contract, nêu đúng các khái niệm K8s/serverless cần cho phỏng vấn, và nhận diện các lỗi vận hành (config drift, image không pin, không có memory limit) từ sự cố thật.
 - **B19** Kiến trúc SaaS multi-tenant: mô hình tenancy, noisy neighbor, quota, cách ly dữ liệu, cache theo tenant, metering — So sánh ba mô hình tenancy bằng con số và chọn đúng cho từng lớp dữ liệu, thiết kế tenant context propagation và fairness trong pipeline nền để một tenant không chiếm hết hệ thống, và nêu được cách xử lý dữ liệu dùng chung, metering, onboarding/offboarding.
 - **B20** Giao tiếp thời gian thực: WebSocket ở quy mô lớn, pub/sub fan-out, presence, push notification, SSE — Thiết kế được lớp WebSocket gateway stateful scale ngang (connection registry, pub/sub routing, heartbeat/reconnect), chọn đúng giữa WebSocket/SSE/long polling/push, và giải thích fan-out, presence, ordering/dedup bằng con số.
 - Mock **M6** Design a news feed
-- **Mốc:** Hết Giai đoạn 2: KT2 ≥ 22/30, 4 mock trung bình ≥ 8/15, 6 lab
+- **Mốc:** Hết Giai đoạn 2: KT2 ≥ 22/30, 7 mock trung bình ≥ 8/15, 6 lab
 
 ## Giai đoạn 3 · Bài toán kinh điển (tuần 14–20)
 
@@ -163,11 +177,12 @@ Bản in của lộ trình trong app `index.html` (mở app để học, làm qu
 - Chủ nhật: nghỉ
 
 ### Tuần 14
-*Làm lại M1 lạnh rồi so với tuần 1. Đọc C1–C3 sau khi làm.*
+*Làm lại M1 lạnh rồi so với tuần 1. Đọc C1–C3 và C21 (distributed cache, cùng họ với C3) sau khi làm.*
 
 - **C1** Case: Design a URL shortener (TinyURL) — Trình bày trọn bài URL shortener trong 45 phút: ước lượng 100M URL/tháng ra QPS và dung lượng, chọn cách sinh short key có lý do, giải thích 301 vs 302 và pipeline analytics bất đồng bộ.
 - **C2** Case: Design a distributed rate limiter — Chọn đúng thuật toán rate limit theo yêu cầu, viết được script Redis Lua atomic, giải thích đặt limiter ở đâu, đồng bộ nhiều node ra sao, và quyết định fail-open hay fail-closed khi Redis chết.
 - **C3** Case: Design a key-value store (Dynamo-style) — Thiết kế được KV store phân tán kiểu Dynamo: consistent hashing với virtual node, replication N và quorum W/R, vector clock, hinted handoff, Merkle tree, gossip, và giải thích write/read path trên LSM tree.
+- **C21** Case: Design a distributed cache (Memcached / Redis cluster) — Thiết kế một distributed cache từ đầu: consistent hashing và rebalancing, eviction LRU/LFU, hot key, replication và failover, client-side routing, và nói rõ vì sao cache không phải là database.
 - Lab **L11** Load test + pprof tìm bottleneck (4 giờ) — Dùng k6 và pprof tìm ra endpoint Preload toàn bộ dữ liệu (sự cố #3), sửa thành stream/paginate có giới hạn concurrency, so sánh RSS và p99 trước/sau, đặt memory limit + GOMEMLIMIT.
 - Mock **M1** Design a URL shortener
 - **Mốc:** M1 lần 2 hơn baseline ≥ 4 điểm; nếu không, đọc lại F2, F7, B3
@@ -189,19 +204,21 @@ Bản in của lộ trình trong app `index.html` (mở app để học, làm qu
 - Mock **M10** Design a cloud file storage
 
 ### Tuần 17
-*Mock lạnh M11 (payment). Case: drive, payment, metrics.*
+*Mock lạnh M11 (payment). Case: drive, payment, metrics, ví điện tử và sổ cái bút toán kép (C23 đọc ngay sau C11).*
 
 - **C10** Case: Design a cloud file storage (Google Drive, Dropbox) — Thiết kế đồng bộ file: chunking block-level với dedup và delta sync, metadata DB strong consistency, notification service cho sync, conflict resolution, offline queue, cold storage và chia sẻ quyền.
 - **C11** Case: Design a payment system — Thiết kế được hệ thống thanh toán qua PSP với ledger double-entry append-only, idempotency end-to-end, webhook + reconciliation, và lý giải vì sao chọn consistency thay vì availability.
 - **C12** Case: Design a metrics monitoring and alerting system — Thiết kế được pipeline metric (pull/push → Kafka → TSDB hot/cold), ước lượng cardinality, nén và downsampling bằng số, và thiết kế alert manager có for-duration, dedup, silence, route và alert "không có dữ liệu".
+- **C23** Case: Design a digital wallet with a double-entry ledger — Thiết kế ví điện tử đúng về tiền: sổ cái bút toán kép, idempotency, chuyển tiền giữa hai ví, saga với dịch vụ ngoài, đối soát, và nói được vì sao không bao giờ lưu số dư như một con số có thể UPDATE tuỳ tiện.
 - Mock **M11** Design a payment system
 
 ### Tuần 18
-*Mock lạnh M14 (proximity). Case: ad aggregation, proximity, message queue. Bắt đầu capstone L12.*
+*Mock lạnh M14 (proximity). Case: ad aggregation, proximity, message queue, top-K/trending (C22 đọc ngay sau C13). Bắt đầu capstone L12.*
 
 - **C13** Case: Design an ad click event aggregation system — Thiết kế được pipeline Kafka → Flink window 1 phút → OLAP với exactly-once hiệu quả bằng dedup + idempotent write, xử lý late event bằng watermark, và giữ raw data để reconcile; so sánh lambda và kappa.
 - **C14** Case: Design a proximity service (Yelp nearby search) — Thiết kế được dịch vụ tìm địa điểm gần đây với geohash (so sánh quadtree, S2), tách business service khỏi location service đọc nhiều, cache theo ô geohash, và mở rộng sang nearby friends với WebSocket + Redis pub/sub.
 - **C15** Case: Design a distributed message queue (Kafka-like) — Thiết kế được message queue phân tán với topic/partition, segment log append-only + index, replication leader/ISR, consumer group và offset, coordinator; giải thích push vs pull, delivery semantics, retention và rebalancing bằng số.
+- **C22** Case: Design a trending / top-K system (heavy hitters) — Thiết kế hệ đếm top-K thời gian thực trên luồng sự kiện lớn: vì sao đếm chính xác không khả thi, dùng count-min sketch và heap thế nào, cửa sổ trượt, kết hợp lớp nhanh và lớp chính xác, và chống gian lận.
 - Lab **L12** Capstone: mini SBOM pipeline (4 giờ (có thể chia 2 buổi)) — Ghép mọi pattern đã học thành pipeline upload → queue → enrich gọi API giả có lỗi/rate limit → isolate per item, retry/backoff, DLQ, status machine, sweeper fair theo tenant, metric Prometheus + alert "no success 5 phút".
 - Mock **M14** Design a proximity service (nearby search)
 
@@ -215,9 +232,10 @@ Bản in của lộ trình trong app `index.html` (mở app để học, làm qu
 - Mock **M18** Design a distributed job scheduler
 
 ### Tuần 20
-*Capstone: thiết kế lại hệ SBOM của chính bạn (M19 rồi đọc C19). Hoàn thành L12. Checkpoint KT3.*
+*Capstone: thiết kế lại hệ SBOM của chính bạn (M19 rồi đọc C19), rồi đọc C20 (trợ lý RAG) như phần mở rộng AI cho chính hệ đó. Hoàn thành L12. Checkpoint KT3. Tuần đệm: còn nợ case nào thì bù ở đây.*
 
 - **C19** Case: Design an SBOM analysis platform (capstone) — Thiết kế lại từ đầu hệ thống bạn đang làm như một bài phỏng vấn: multi-tenant upload SBOM lớn, component store dùng chung + overlay per-tenant, enrichment pipeline gọi API ngoài có politeness và isolate lỗi, sweeper công bằng, policy eval incremental với atomic swap, scheduler persist, outbox, observability và capacity; mỗi quyết định gắn với một sự cố thật.
+- **C20** Case: Design an AI assistant over private documents (RAG) — Trình bày trọn bài trợ lý hỏi đáp trên tài liệu riêng trong 45 phút: tách đường ingest và đường hỏi, ước lượng dung lượng vector và chi phí token, chọn hạ tầng index có lý do, nói được cách chống rò rỉ chéo tenant và cách đo chất lượng bằng eval set.
 - Mock **M19** Design an SBOM analysis platform
 - Test **KT3** Checkpoint case study (tuần 20) (30 câu, 35 phút)
 - **Mốc:** Hết Giai đoạn 3: KT3 ≥ 24/30, mock trung bình ≥ 10/15, L12 chạy được
@@ -244,11 +262,12 @@ Bản in của lộ trình trong app `index.html` (mở app để học, làm qu
 - Mock **X2** Design a collaborative document editor (Google Docs)
 
 ### Tuần 22
-*LLD/OOD, networking, OS. Đề lạ X3, X4.*
+*LLD/OOD, networking, OS, và vòng coding (10 dạng bài, design in code, cách nói khi đang gõ). Đề lạ X3, X4.*
 
 - **K4** Low-level design / OOD — Trình bày một bài LLD 30 phút theo khung requirements → entities → interfaces → core algorithm → extensibility; viết được LRU cache O(1), rate limiter object và pub/sub in-process bằng Go; giải thích SOLID và 7 pattern bằng ví dụ Go idiomatic.
 - **K5** Networking Q&A — Kể trọn vẹn "what happens when you type a URL" trong 3 phút, giải thích TIME_WAIT/ephemeral port và vì sao phải có connection pool, so sánh HTTP/1.1–2–3, TLS 1.3, L4/L7, và chẩn đoán được lỗi hairpin NAT đã gặp trên pilot.
 - **K6** Operating system Q&A — Giải thích bằng ngôn ngữ vận hành: RSS vs heap, page cache và "free thấp là bình thường", OOM killer global vs cgroup (vì sao OOMKilled=false), CPU throttling, epoll vs io_uring, fsync/WAL, container = namespace + cgroup + overlayfs, và quy trình SIGTERM → drain.
+- **K13** Vòng coding cho backend: độ phức tạp, 10 dạng bài, bài "design in code", và cách nói khi đang gõ — Nhận dạng được dạng bài trong 60 giây đầu và nói ra độ phức tạp trước khi gõ; viết đúng 10 khuôn mẫu cơ bản bằng Go mà không cần nhớ thư viện lạ; làm được nhóm bài "design in code" (LRU, rate limiter, parse log) vốn hay gặp hơn nhiều ở mức mid–senior; có kế hoạch luyện 6 tuần thay vì cày ngẫu nhiên.
 - Mock **X3** Design a log aggregation and search platform (ELK-like)
 - Mock **X4** Design a multi-tenant issue tracker like Backlog/Jira
 

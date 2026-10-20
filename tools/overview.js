@@ -2,10 +2,10 @@
 const fs = require('fs'), vm = require('vm'), path = require('path');
 const root = path.join(__dirname, '..');
 const w = {}; const ctx = { window: w, console };
-for (const f of ['schedule.js', 'phase1.js', 'phase2a.js', 'phase2a2.js', 'phase2b.js', 'cases1.js', 'cases2.js', 'knowledge.js', 'labs.js', 'tests.js', 'mocks_extra.js']) {
+for (const f of ['schedule.js', 'phase1.js', 'phase2a.js', 'phase2a2.js', 'phase2b.js', 'phase2c.js', 'cases1.js', 'cases2.js', 'cases3.js', 'mocks3.js', 'knowledge.js', 'knowledge2.js', 'labs.js', 'tests.js', 'mocks_extra.js']) {
   const p = path.join(root, 'data', f); if (fs.existsSync(p)) { try { vm.runInNewContext(fs.readFileSync(p, 'utf8'), ctx, { filename: f }); } catch (e) { console.error('skip', f, e.message); } }
 }
-const L = {}; [w.LESSONS_F, w.LESSONS_B1, w.LESSONS_B1B, w.LESSONS_B2, w.LESSONS_C1, w.LESSONS_C2, w.LESSONS_K].forEach(a => (a || []).forEach(l => L[l.id] = l));
+const L = {}; [w.LESSONS_F, w.LESSONS_B1, w.LESSONS_B1B, w.LESSONS_B2, w.LESSONS_B2B, w.LESSONS_C1, w.LESSONS_C2, w.LESSONS_C3, w.LESSONS_K, w.LESSONS_K2].forEach(a => (a || []).forEach(l => L[l.id] = l));
 const MOCKS = w.MOCKS || [], LABS = w.LABS || [], KT = w.KTESTS || [];
 const PH = { 1: 'Giai đoạn 1 · Nền tảng (tuần 1–5)', 2: 'Giai đoạn 2 · Khối xây dựng (tuần 6–13)', 3: 'Giai đoạn 3 · Bài toán kinh điển (tuần 14–20)', 4: 'Giai đoạn 4 · Phỏng vấn & thực chiến (tuần 21–24)' };
 const title = id => L[id] ? `**${id}** ${L[id].title}` : `**${id}**`;
