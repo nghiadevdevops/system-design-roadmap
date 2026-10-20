@@ -38,7 +38,7 @@ Tuần 1 làm **baseline**: KT0 + mock M1 lạnh. Tuần 14 làm lại M1 để 
 - **Lab Go** (12): từ đo latency, pool/timeout, cache stampede, idempotent consumer + DLQ, consistent hashing, outbox, rate limiter Lua, Snowflake, bloom filter, distributed cron, load test + pprof, đến capstone mini SBOM pipeline.
 - **Sổ tay thiết kế**: ADR mini, postmortem mini, bài học, "áp dụng thứ Sáu", khác biệt sau mock, câu chuyện STAR. Xuất Markdown.
 - **Thuật ngữ**: bảng tra cứu tiếng Việt có tìm kiếm và lọc theo chủ đề; trong bài học, thuật ngữ được gạch chân chấm, bấm vào hiện định nghĩa ngắn (bật/tắt ở Cài đặt).
-- **Tab Job (OTS Full-stack Node/Next)**: phân tích JD, ma trận khớp kỹ năng chỉnh được, kế hoạch 4 tuần, bài J1–J10, 70 câu hỏi kỹ thuật nhanh, 4 mock nghiệp vụ hãng tàu (JM1–JM4), 10 câu behavioral gắn với JD, dự án luyện tay NestJS + Next.js, pitch và checklist ngày phỏng vấn.
+- **Tab Job (OTS Full-stack Node/Next)**: trang đầu "Kiến thức cần học" (11 mảng theo JD, 101 khái niệm có checklist, bài J chính + bài liên quan), phân tích JD, ma trận khớp kỹ năng chỉnh được, kế hoạch 4 tuần, bài J1–J10, 70 câu hỏi kỹ thuật nhanh, 4 mock nghiệp vụ hãng tàu (JM1–JM4), 10 câu behavioral gắn với JD, dự án luyện tay NestJS + Next.js, pitch và checklist ngày phỏng vấn.
 - **Hướng dẫn**: cách làm đề (khung 5 pha, câu hỏi làm rõ, công thức ước lượng, rubric, luyện một mình, prompt AI làm người phỏng vấn, 12 sai lầm), cách làm test & oral, dùng vào công việc (mẫu design doc, ADR, capacity plan, production readiness, postmortem), tài nguyên.
 
 ## Cấu trúc file
@@ -59,6 +59,7 @@ data/labs.js          LABS (L1–L12)
 data/mocks_extra.js   MOCKS X1–X6 (có reference)
 data/guides.js        GUIDES (method, knowledge, real, resources)
 data/job.js           JOB (overview, domain, matrix, plan, project, behavioral, pitch, ask, checklist) + thuật ngữ hãng tàu
+data/job_syllabus.js  JOB.syllabus (11 mảng kiến thức, concepts, lessons, related, practice)
 data/job_lessons1-3.js LESSONS_J1..J3 (J1–J10, type job)
 data/job_qa.js        JOB_QA (JQ1–JQ70)
 data/job_mocks.js     MOCKS JM1–JM4 (có reference)

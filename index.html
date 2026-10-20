@@ -62,7 +62,7 @@ details summary{cursor:pointer;font-weight:600}
 .gl .card{padding:10px 14px;margin:6px 0}.gl .pt{font-weight:700;margin-bottom:2px}
 #menu-btn{display:none}
 @media(max-width:860px){#side{position:fixed;left:-250px;z-index:5;transition:.2s}#side.open{left:0}#menu-btn{display:inline-block;position:fixed;top:10px;left:10px;z-index:6}#main{padding:52px 14px 60px}}
-@media(max-width:860px){#main table{display:block;overflow-x:auto}.grid.g4{gap:8px}.grid.g4 .card{margin:0;padding:10px 12px}.stat{font-size:22px}.kv{grid-template-columns:1fr}.tabs{flex-wrap:nowrap;overflow-x:auto}.tabs a{white-space:nowrap}}
+@media(max-width:860px){#main table{display:block;overflow-x:auto}.grid.g4{gap:8px}.grid.g4 .card{margin:0;padding:10px 12px}.stat{font-size:22px}.kv{grid-template-columns:1fr}.tabs{flex-wrap:nowrap;overflow-x:auto}.tabs a{white-space:nowrap}.tabs.jtabs{flex-wrap:wrap;overflow:visible;border:0;gap:6px}.tabs.jtabs a{border:1px solid var(--line);border-radius:999px;padding:5px 11px;margin:0;font-size:13px}.tabs.jtabs a.active{background:var(--pri);color:#fff;border-color:var(--pri)}}
 @media print{#side,#menu-btn{display:none}#main{padding:0}}
 </style>
 </head>
@@ -115,6 +115,7 @@ details summary{cursor:pointer;font-weight:600}
 <script src="data/glossary.js"></script>
 <script src="data/glossary2.js"></script>
 <script src="data/job.js"></script>
+<script src="data/job_syllabus.js"></script>
 <script src="data/job_lessons1.js"></script>
 <script src="data/job_lessons2.js"></script>
 <script src="data/job_lessons3.js"></script>
@@ -246,9 +247,9 @@ function vGlossary(sel){const topic=S._gt||'';const topics={};GLOSSARY.forEach(g
 
 /* ================= JOB TAB ================= */
 const JOB_DAYS=[1,3,7,14];
-function J(){S.job=S.job||{};['plan','qa','beh','behDone','proj','acc','check','gap'].forEach(k=>{if(!S.job[k])S.job[k]={};});return S.job;}
+function J(){S.job=S.job||{};['plan','qa','beh','behDone','proj','acc','check','gap','syl'].forEach(k=>{if(!S.job[k])S.job[k]={};});return S.job;}
 function jobLessonIds(){return Object.keys(LESSONS).filter(id=>LESSONS[id].type==='job').sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));}
-function jobTabs(sub){const T=[['','Tổng quan'],['matrix','Khớp kỹ năng'],['plan','Kế hoạch 4 tuần'],['lessons','Bài học'],['qa','Câu hỏi nhanh'],['mock','Mock hãng tàu'],['behavioral','Behavioral'],['project','Dự án luyện tay'],['prep','Chuẩn bị']];return `<div class="tabs">${T.map(t=>`<a href="#/job${t[0]?'/'+t[0]:''}" class="${(sub||'')===t[0]?'active':''}">${t[1]}</a>`).join('')}</div>`;}
+function jobTabs(sub){const T=[['','Kiến thức cần học'],['overview','Tổng quan JD'],['matrix','Khớp kỹ năng'],['plan','Kế hoạch 4 tuần'],['lessons','Bài học'],['qa','Câu hỏi nhanh'],['mock','Mock hãng tàu'],['behavioral','Behavioral'],['project','Dự án luyện tay'],['prep','Chuẩn bị']];return `<div class="tabs jtabs">${T.map(t=>`<a href="#/job${t[0]?'/'+t[0]:''}" class="${(sub||'')===t[0]?'active':''}">${t[1]}</a>`).join('')}</div>`;}
 const GAP_LBL=[['Mạnh','ok'],['Khá','g'],['Cần bù','warn'],['Thiếu','bad']];
 function vJob(sub){
  if(!JOB){main.innerHTML='<h1>Tab Job</h1><p class="muted">Chưa có dữ liệu job.</p>';return;}
@@ -257,7 +258,18 @@ function vJob(sub){
  const pTot=JOB.plan.reduce((a,w)=>a+w.tasks.length,0);const pDone=Object.keys(st.plan).length;const bDone=Object.keys(st.behDone).length;
  const head=`<div class="noterm"><div class="row" style="justify-content:space-between"><div><h1 style="margin:0">${esc(JOB.title)}</h1><p class="sub" style="margin:2px 0 0">${esc(JOB.company)} · ${esc(JOB.location)} · <a href="${esc(JOB.url)}" target="_blank" rel="noopener">Tin tuyển dụng ↗</a></p></div></div>
  <div class="grid g4" style="margin-top:8px"><div class="card"><div class="stat">${ld}/${jl.length}<small>bài học J đã xong</small></div></div><div class="card"><div class="stat">${qaKnown}/${JOB_QA.length}<small>câu hỏi nhanh "biết rõ"</small></div></div><div class="card"><div class="stat">${jmDone}/${jm.length}<small>mock hãng tàu đã làm</small></div></div><div class="card"><div class="stat">${pDone}/${pTot}<small>việc trong kế hoạch</small></div></div><div class="card"><div class="stat">${bDone}/${JOB.behavioral.length}<small>câu behavioral đã tập</small></div></div></div></div>${jobTabs(sub)}`;
- const V={'':()=>`<div class="card">${md(JOB.overview)}</div><div class="card">${md(JOB.domain)}</div>`,
+ const V={'':()=>{const SY=JOB.syllabus||[];let cT=0,cD=0;SY.forEach((a,ai)=>a.concepts.forEach((c,ci)=>{cT++;if(st.syl[ai+':'+ci])cD++;}));
+  const order=[];SY.forEach(a=>(a.lessons||[]).forEach(id=>{if(LESSONS[id]&&!order.includes(id))order.push(id);}));const next=order.find(id=>!S.done[id]);
+  return `<div class="card" style="border-color:var(--pri)"><h3 style="margin-top:0">Học gì cho job này</h3><p>${SY.length} mảng kiến thức theo đúng yêu cầu của JD. Mỗi mảng có bài học chính (J1–J10, viết riêng cho job này), bài liên quan trong lộ trình chung, checklist khái niệm phải nắm và một bài luyện tay. Học mảng <b>ưu tiên 1</b> trước; tick khái niệm khi bạn giải thích được nó trong 1 phút không nhìn tài liệu.</p>
+  <div class="row"><span class="badge">${ld}/${jl.length} bài J đã xong</span><span class="badge">${cD}/${cT} khái niệm đã nắm</span>${next?`<a class="btn primary" href="#/lesson/${next}">Học tiếp: ${next} · ${esc(LESSONS[next].title)}</a>`:'<span class="badge ok">Đã xong mọi bài J</span>'}</div>
+  <div class="progress" style="margin-top:6px"><i style="width:${cT?Math.round(cD*100/cT):0}%"></i></div></div>
+  ${SY.map((a,ai)=>{const d=a.concepts.filter((c,ci)=>st.syl[ai+':'+ci]).length;return `<div class="card"><div class="row" style="justify-content:space-between"><h3 style="margin:0">${ai+1}. ${esc(a.area)}</h3><span><span class="badge ${a.prio===1?'warn':'g'}">Ưu tiên ${a.prio}</span> <span class="badge ${d===a.concepts.length?'ok':''}">${d}/${a.concepts.length}</span></span></div>
+   <p class="small muted" style="margin:4px 0 8px">${inline(a.why)}</p>
+   ${(a.lessons||[]).length?`<div class="lesson-list">${a.lessons.map(lessonLink).join('')}</div>`:''}
+   ${(a.related||[]).length?`<div class="small" style="margin:6px 0">Bài liên quan trong lộ trình chung: ${a.related.filter(id=>LESSONS[id]).map(id=>`<a class="chip" href="${lessonHref(id)}" title="${esc(LESSONS[id].title)}">${id} · ${esc(LESSONS[id].title.slice(0,38))}${LESSONS[id].title.length>38?'…':''}</a>`).join(' ')}</div>`:''}
+   <details ${d<a.concepts.length?'open':''}><summary class="small">Khái niệm phải nắm (${a.concepts.length})</summary>${a.concepts.map((c,ci)=>{const k=ai+':'+ci;return `<label class="task ${st.syl[k]?'done':''}"><input type="checkbox" data-syl="${k}" ${st.syl[k]?'checked':''}><span>${inline(c)}</span></label>`;}).join('')}</details>
+   <p class="small" style="margin:8px 0 0"><b>Luyện tay:</b> ${inline(a.practice)}</p></div>`;}).join('')}`;},
+ overview:()=>`<div class="card">${md(JOB.overview)}</div><div class="card">${md(JOB.domain)}</div>`,
  matrix:()=>{const cnt=[0,0,0,0];JOB.matrix.forEach((r,i)=>{const g=st.gap[i]!=null?st.gap[i]:r.gap;cnt[g]++;});
   return `<p class="sub">So từng yêu cầu của JD với kinh nghiệm của bạn. Cột "Mức" chỉnh được theo tự đánh giá của bạn; mục <b>Cần bù</b> và <b>Thiếu</b> là thứ tự ưu tiên ôn.</p><div class="row">${GAP_LBL.map((g,i)=>`<span class="badge ${g[1]}">${g[0]}: ${cnt[i]}</span>`).join('')}</div>
   <table><thead><tr><th>Yêu cầu</th><th style="width:70px">Loại</th><th>Bạn đã có</th><th style="width:110px">Mức</th><th>Việc cần làm</th><th style="width:90px">Bài</th></tr></thead><tbody>${JOB.matrix.map((r,i)=>{const g=st.gap[i]!=null?st.gap[i]:r.gap;return `<tr><td><b>${esc(r.req)}</b></td><td class="small">${r.must?'Bắt buộc':'Ưu tiên'}</td><td class="small">${inline(r.have)}</td><td><select data-gap="${i}" style="width:auto;padding:3px 6px">${GAP_LBL.map((x,k)=>`<option value="${k}" ${k===g?'selected':''}>${x[0]}</option>`).join('')}</select></td><td class="small">${inline(r.todo)}</td><td class="small">${(r.links||[]).map(id=>`<a href="${lessonHref(id)}">${id}</a>`).join(' ')}</td></tr>`;}).join('')}</tbody></table>`;},
@@ -277,7 +289,7 @@ function vJob(sub){
  prep:()=>`<div class="card">${md(JOB.pitch)}</div><div class="card"><h3>Câu hỏi nên hỏi lại người phỏng vấn</h3><ol>${JOB.ask.map(a=>`<li>${inline(a)}</li>`).join('')}</ol></div><div class="card"><h3>Checklist ngày phỏng vấn</h3>${JOB.checklist.map((t,i)=>`<label class="task ${st.check[i]?'done':''}"><input type="checkbox" data-chk="${i}" ${st.check[i]?'checked':''}><span>${inline(t)}</span></label>`).join('')}<div class="row"><button class="btn sm" id="chkreset">Bỏ tick để dùng cho buổi sau</button></div></div>`};
  main.innerHTML=head+(V[sub||'']||V[''])();const ta=main.querySelector('.tabs a.active');if(ta&&ta.parentNode.scrollWidth>ta.parentNode.clientWidth)ta.parentNode.scrollLeft=ta.offsetLeft-ta.parentNode.clientWidth/2+ta.offsetWidth/2;
  const tog=(sel,obj,attr)=>main.querySelectorAll(sel).forEach(cb=>cb.onchange=()=>{const k=cb.dataset[attr];if(cb.checked){obj[k]=today();act();}else{delete obj[k];save();}cb.closest('.task')&&cb.closest('.task').classList.toggle('done',cb.checked);});
- tog('[data-plan]',st.plan,'plan');tog('[data-proj]',st.proj,'proj');tog('[data-acc]',st.acc,'acc');tog('[data-chk]',st.check,'chk');tog('[data-bd]',st.behDone,'bd');
+ tog('[data-plan]',st.plan,'plan');tog('[data-syl]',st.syl,'syl');tog('[data-proj]',st.proj,'proj');tog('[data-acc]',st.acc,'acc');tog('[data-chk]',st.check,'chk');tog('[data-bd]',st.behDone,'bd');
  main.querySelectorAll('[data-gap]').forEach(se=>se.onchange=()=>{st.gap[se.dataset.gap]=+se.value;save();vJob('matrix');});
  main.querySelectorAll('[data-beh]').forEach(ta=>ta.oninput=()=>{st.beh[ta.dataset.beh]=ta.value;save();});
  main.querySelectorAll('[data-bt]').forEach(b=>b.onclick=()=>{const t=mkTimer(120,document.getElementById('bt'+b.dataset.bt),()=>toast('Hết 2 phút'));t.start();});
@@ -291,7 +303,7 @@ function vJob(sub){
    box.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{const r=+b.dataset.r;const prev=st.qa[q.id];const bx=r===3?Math.min(4,(prev&&prev.box>=3?prev.box+1:3)):r;st.qa[q.id]={box:bx,due:Date.now()+JOB_DAYS[Math.min(3,bx-1)]*864e5,n:(prev?prev.n||0:0)+1,d:today()};act();toast('Đã lưu');vJob('qa');});termify(box);};draw();box.scrollIntoView({behavior:'smooth',block:'start'});};
   document.getElementById('jqr').onclick=()=>{const due=pool.filter(q=>{const o=st.qa[q.id];return !o||o.due<=now;});const src=due.length?due:pool;if(!src.length){toast('Không có câu nào');return;}show(pick(src));};
   main.querySelectorAll('tr[data-jq]').forEach(tr=>tr.onclick=()=>show(JOB_QA.find(q=>q.id===tr.dataset.jq)));}
- if(!sub||sub==='project'||sub==='behavioral')termify(main);
+ if(!sub||sub==='overview'||sub==='project'||sub==='behavioral')termify(main);
 }
 
 /* ================= ROUTER ================= */
@@ -336,6 +348,7 @@ function vDash(){
   <div class="card"><div class="stat">${kt?kt.score+'/'+kt.total:'—'}<small>test kiến thức gần nhất ${kt?'('+kt.id+')':''}</small></div></div>
   <div class="card"><div class="stat">${S.journal.length}<small>mục trong Sổ tay thiết kế</small></div><a class="btn sm" href="#/journal/new" style="margin-top:6px">Ghi mục mới</a></div>
  </div>
+ ${JOB?`<div class="card" style="border-color:var(--pri)"><div class="row" style="justify-content:space-between"><span><b>Job đang ứng tuyển:</b> ${esc(JOB.title)} · ${esc(JOB.company)}</span><span><span class="badge">${Object.values(LESSONS).filter(l=>l.type==='job'&&S.done[l.id]).length}/${Object.values(LESSONS).filter(l=>l.type==='job').length} bài J</span> <a class="btn sm primary" href="#/job">Kiến thức cần học →</a></span></div></div>`:''}
  <div class="grid g2">
   <div class="card"><h3>Hôm nay (${['Chủ nhật','Thứ 2','Thứ 3','Thứ 4','Thứ 5','Thứ 6','Thứ 7'][dow]})</h3>${todays.length?todays.map((t,i)=>taskHtml(cw,dow,i,t)).join(''):'<p class="muted">Hôm nay nghỉ. Nếu còn thẻ đến hạn thì ôn 10 phút rồi nghỉ.</p>'}
    <div class="row" style="margin-top:10px"><a class="btn sm" href="#/week/${cw}">Xem cả tuần</a><a class="btn sm" href="#/oral">Oral 5 câu</a><a class="btn sm" href="#/drill">Drill</a></div></div>
